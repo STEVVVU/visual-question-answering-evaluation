@@ -17,7 +17,9 @@ Send `doctor`. It checks the owned process and production `/api/app-config`, ver
 
 ## Drive
 
-Send `drive`. It creates a synthetic session through `/api/sessions/save`, uploads 120 rows through `/api/tables/create-table`, and reads them through `/api/tables/sample-table`. The original row-position field `#rowId` is part of the expected API response. `restart` stops and relaunches the owned process, then verifies exact rows from the retained Parquet workspace. `verify` repeats the read.
+Send `drive`. It creates a synthetic session through `/api/sessions/save`, uploads 120 rows through `/api/tables/create-table`, and reads them through `/api/tables/sample-table`. The original row-position field `#rowId` is part of the expected API response. Send `experiment` for real analysis, allocation blocking and declaration validation. `restart` stops and relaunches the owned process, then verifies exact rows and the complete saved report from the retained Parquet workspace. `verify` repeats those reads. `--ci` executes this complete journey and cleanup.
+
+For the model-free path open `/experiments`, create a workspace, load the synthetic example, confirm the three design declarations and analyze. Download JSON through the real export control. Change the planned allocation to 0.8 to verify result invalidation and mismatch blocking. See [the experiment map](features/experiments.md) for acceptance and limits.
 
 Open the logged URL with CUA. Choose the `trialdesk-verification` session. The inherited Upload data → Upload Data → Browse → Load Table path accepts `tools/fixtures/synthetic-experiment.csv`. Its preview contains 1,000 synthetic units and four columns. This upload works without a model, but the inherited main canvas has a Select Models overlay and model-dependent semantic inference fails without credentials. Do not count the hidden canvas behind that overlay as visual acceptance.
 

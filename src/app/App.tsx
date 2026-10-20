@@ -79,6 +79,7 @@ import {
     useSearchParams,
 } from "react-router-dom";
 import { About } from '../views/About';
+import { ExperimentStudio } from '../views/ExperimentStudio';
 import { MessageSnackbar } from '../views/MessageSnackbar';
 import { ChartRenderService } from '../views/ChartRenderService';
 import { DictTable } from '../components/ComponentType';
@@ -186,7 +187,7 @@ declare module '@mui/material/styles' {
     }
 }
 
-export const toolName = "Data Formulator"
+export const toolName = "Trialdesk"
 
 const LANGUAGE_LABELS: Record<string, string> = {
     en: 'EN',
@@ -294,13 +295,14 @@ const LanguageMenuItems: React.FC<{ onSelect: () => void }> = ({ onSelect }) => 
 };
 
 /** Compact replacement for the About / App top-nav buttons. */
-const PageNavMenu: React.FC<{ isAboutPage: boolean }> = ({ isAboutPage }) => {
+const PageNavMenu: React.FC<{ isAboutPage: boolean; isExperimentPage: boolean }> = ({ isAboutPage, isExperimentPage }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const pages = [
         { to: '/about', label: t('appBar.about'), selected: isAboutPage },
-        { to: '/app', label: t('appBar.app'), selected: !isAboutPage },
+        { to: '/app', label: t('appBar.app'), selected: !isAboutPage && !isExperimentPage },
+        { to: '/experiments', label: 'Experiments', selected: isExperimentPage },
     ];
     const currentLabel = pages.find(page => page.selected)?.label ?? '';
 
@@ -1084,6 +1086,7 @@ const AppShell: FC = () => {
     const generatedReports = useSelector((state: DataFormulatorState) => state.generatedReports);
 
     const isAboutPage = location.pathname === '/about';
+    const isExperimentPage = location.pathname === '/experiments';
     const isAppPage = !isAboutPage;
 
     // The desktop canvas (threads, encoding shelf, viz cards) genuinely needs
@@ -1132,7 +1135,7 @@ const AppShell: FC = () => {
                             <Box component="img" sx={{ height: 20 }} alt="" src={dfLogo} />
                         </Box>
                         {isCompactToolbar ? (
-                            <PageNavMenu isAboutPage={isAboutPage} />
+                            <PageNavMenu isAboutPage={isAboutPage} isExperimentPage={isExperimentPage} />
                         ) : (
                         <>
                         <Button sx={{
@@ -1158,13 +1161,14 @@ const AppShell: FC = () => {
                             }}
                         >
                             <TopNavButton to="/about" label={t('appBar.about')} selected={isAboutPage} />
-                            <TopNavButton to="/app" label={t('appBar.app')} selected={isAppPage} />
+                            <TopNavButton to="/app" label={t('appBar.app')} selected={isAppPage && !isExperimentPage} />
+                            <TopNavButton to="/experiments" label="Experiments" selected={isExperimentPage} />
                         </Box>
                         </>
                         )}
                         {!isCompactToolbar && !activeWorkspace && (
                             <Typography noWrap sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 500, fontSize: '0.65rem', color: 'text.secondary', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                                {t('appBar.microsoftResearch')}
+                                Data Formulator fork
                             </Typography>
                         )}
                         {/* Workspace name — session indicator/switcher. Centered
@@ -1697,6 +1701,10 @@ export const AppFC: FC<AppFCProps> = function AppFC(appProps) {
                 {
                     path: "app",
                     element: <DataFormulatorFC />,
+                },
+                {
+                    path: "experiments",
+                    element: <ExperimentStudio />,
                 },
                 {
                     path: "about",

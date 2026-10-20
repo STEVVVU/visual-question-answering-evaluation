@@ -32,6 +32,7 @@ base = f"http://127.0.0.1:{args.port}"
 workspace_id = "trialdesk-verification"
 evidence: dict = {"run": args.run_name, "base": base, "actions": []}
 child: subprocess.Popen | None = None
+analysis_record: dict | None = None
 log = (run / "server.log").open("a", encoding="utf-8")
 
 
@@ -41,7 +42,7 @@ def port_free() -> bool:
         return probe.connect_ex(("127.0.0.1", args.port)) != 0
 
 
-def api(route: str, payload=None, form=None):
+def api(route: str, payload=None, form=None, expected="success"):
     headers = {"X-Workspace-Id": workspace_id}
     body = None
     if payload is not None:
@@ -51,10 +52,16 @@ def api(route: str, payload=None, form=None):
         headers["Content-Type"] = "application/x-www-form-urlencoded"
         body = urllib.parse.urlencode(form).encode()
     request = urllib.request.Request(base + route, body, headers)
-    with urllib.request.urlopen(request, timeout=30) as response:
+    try:
+        response = urllib.request.urlopen(request, timeout=30)
+    except urllib.error.HTTPError as error:
+        if expected != "error":
+            raise
+        response = error
+    with response:
         result = json.load(response)
-    assert result["status"] == "success", result
-    return result["data"]
+    assert result["status"] == expected, result
+    return result["data"] if expected == "success" else result["error"]
 
 
 def doctor():
@@ -116,7 +123,10 @@ def stop():
             os.killpg(child.pid, signal.SIGTERM)
         child.wait(timeout=20)
     child = None
-    assert port_free(), "Owned listener did not stop"
+    deadline = time.monotonic() + 5
+    while not port_free():
+        assert time.monotonic() < deadline, "Owned listener did not stop after process termination"
+        time.sleep(0.05)
 
 
 def drive():
@@ -143,12 +153,41 @@ def verify():
     digest = hashlib.sha256(json.dumps(rows, sort_keys=True).encode()).hexdigest()
     evidence["actions"].append({"action": "read-table", "rows": len(rows), "sha256": digest})
     print("DRIVE passed: exact 120-row table through production upload/read routes", flush=True)
+    if analysis_record is not None:
+        report = api("/api/experiments/analyze", analysis_record["specification"])
+        assert report == analysis_record, "Analysis changed after restart without an input change"
+        evidence["actions"].append({"action": "repeat-analysis", "sha256": report["selected_input_sha256"]})
+        print("ANALYSIS passed: identical selected-input hash and full result after restart", flush=True)
+
+
+def experiment():
+    global analysis_record
+    specification = {
+        "table": "verification_experiment", "unit_column": "unit", "variant_column": "arm",
+        "outcome_column": "outcome", "covariate_column": "pre", "control": "control",
+        "treatment": "treatment", "expected_treatment_fraction": 0.5,
+        "randomized_units_confirmed": True, "pre_period_confirmed": True, "fixed_horizon_confirmed": True,
+    }
+    report = api("/api/experiments/analyze", specification)
+    assert report["status"] == "ready"
+    assert report["counts"] == {"control": 60, "treatment": 60, "total": 120}
+    assert set(report["estimates"]) == {"ordinary", "cuped"}
+    blocked = api("/api/experiments/analyze", {**specification, "expected_treatment_fraction": 0.9})
+    assert blocked["status"] == "blocked" and blocked["estimates"] is None
+    refused = api("/api/experiments/analyze", {**specification, "pre_period_confirmed": False}, expected="error")
+    assert refused["code"] == "VALIDATION_ERROR"
+    analysis_record = report
+    (run / "analysis.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    evidence["actions"].append({"action": "analyze", "counts": report["counts"],
+        "selected_input_sha256": report["selected_input_sha256"], "srmBlocked": True,
+        "missingDeclarationRejected": True})
+    verify()
 
 
 try:
     launch()
-    print(f"READY {base}; commands doctor, drive, restart, verify, cleanup", flush=True)
-    commands = ["drive", "restart", "verify", "cleanup"] if args.ci else sys.stdin
+    print(f"READY {base}; commands doctor, drive, experiment, restart, verify, cleanup", flush=True)
+    commands = ["drive", "experiment", "restart", "verify", "cleanup"] if args.ci else sys.stdin
     for line in commands:
         command = line.strip()
         if command == "cleanup":
@@ -159,18 +198,22 @@ try:
             drive()
         elif command == "verify":
             verify()
+        elif command == "experiment":
+            experiment()
         elif command == "restart":
             stop()
             launch()
             verify()
         else:
-            print("Use doctor, drive, restart, verify, cleanup", flush=True)
+            print("Use doctor, drive, experiment, restart, verify, cleanup", flush=True)
 except Exception as error:
     evidence["error"] = f"{type(error).__name__}: {error}"
     raise
 finally:
-    stop()
-    log.close()
-    evidence["cleanup"] = {"listenerStopped": port_free(), "retainedHome": str(home)}
-    (run / "result.json").write_text(json.dumps(evidence, indent=2), encoding="utf-8")
-    print(f"Evidence retained at {run}", flush=True)
+    try:
+        stop()
+    finally:
+        log.close()
+        evidence["cleanup"] = {"listenerStopped": port_free(), "retainedHome": str(home)}
+        (run / "result.json").write_text(json.dumps(evidence, indent=2), encoding="utf-8")
+        print(f"Evidence retained at {run}", flush=True)
