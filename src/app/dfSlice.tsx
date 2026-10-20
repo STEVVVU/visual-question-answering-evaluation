@@ -2681,7 +2681,7 @@ export const dfSelectors = {
                 seen.add(cur.id);
                 const p: string | undefined = cur.parentNodeId;
                 if (!p) break;
-                const parentTurn = textTurns.find(tt => tt.id === p);
+                const parentTurn: TextTurn | undefined = textTurns.find(tt => tt.id === p);
                 if (parentTurn?.dataOperation || parentTurn?.form) {
                     return { type: 'text', textId: parentTurn.id };
                 }
