@@ -1,5 +1,7 @@
 
 *env
+.audit/
+.tooling/
 .venv/
 .env
 .vscode/settings.json
