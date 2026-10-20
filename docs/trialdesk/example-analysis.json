@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "method_version": "trialdesk-cuped-1",
+  "specification": {
+    "table": "experiment_676892c81824",
+    "unit_column": "unit_id",
+    "variant_column": "variant",
+    "outcome_column": "outcome",
+    "covariate_column": "pre_period",
+    "control": "control",
+    "treatment": "treatment",
+    "expected_treatment_fraction": 0.5,
+    "randomized_units_confirmed": true,
+    "pre_period_confirmed": true,
+    "fixed_horizon_confirmed": true
+  },
+  "selected_input_sha256": "d2ef1815ad4d30348d6474c296c8f8eef5fb7095b670a5921ca9d5ef3c7f5ed4",
+  "counts": {
+    "control": 499,
+    "treatment": 501,
+    "total": 1000
+  },
+  "sample_ratio_p_value": 0.9747749818216399,
+  "status": "ready",
+  "diagnostics": [],
+  "estimates": {
+    "ordinary": {
+      "control_mean": 200.79454680917837,
+      "treatment_mean": 203.212943443992,
+      "effect": 2.4183966348136323,
+      "standard_error": 1.4305054678712525,
+      "degrees_of_freedom": 995.0184184082686,
+      "confidence_interval": [
+        -0.38875718057860364,
+        5.225550450205868
+      ],
+      "p_value": 0.09122854299930008
+    },
+    "cuped": {
+      "control_mean": 200.93437978722886,
+      "treatment_mean": 203.07366868142276,
+      "effect": 2.1392888941938963,
+      "standard_error": 0.7539361748811394,
+      "degrees_of_freedom": 984.8129934677991,
+      "confidence_interval": [
+        0.6597828260818122,
+        3.6187949623059805
+      ],
+      "p_value": 0.004640255616699866
+    }
+  },
+  "assumptions": [
+    "One independent randomized unit per row; no interference or post-treatment selection.",
+    "The covariate was measured before treatment; its timing is a user declaration, not inferred from the data.",
+    "One preselected outcome and a fixed analysis horizon; intervals are not valid for optional stopping or multiple testing.",
+    "Welch t intervals are approximate; CUPED uses one pooled estimated coefficient and plug-in standard errors.",
+    "At least 30 units per arm is an input policy, not proof of valid asymptotics for heavy-tailed data."
+  ],
+  "theta": 1.932927718796042,
+  "estimated_effect_variance_reduction": 0.7222269423905809
+}

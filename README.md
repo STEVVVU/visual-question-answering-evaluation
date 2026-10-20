@@ -1,192 +1,82 @@
-<h1 align="center">
-  <img src="./public/favicon.ico" alt="Data Formulator icon" width="28">&nbsp;
-  Data Formulator: AI-powered Data Visualization
-</h1>
+# Trialdesk
 
+A local experiment-analysis studio built on the complete [Microsoft Data Formulator](https://github.com/microsoft/data-formulator) application. Python, Flask, React, TypeScript, Pandas, NumPy and SciPy.
 
-<p align="center">
-  🪄 Explore data with visualizations, powered by AI agents.
-</p>
+Use an existing workspace table or upload a unit-level CSV. Validate the experiment, compare ordinary and CUPED-adjusted treatment effects, and export a reproducible report. The Experiments workflow needs no model credentials.
 
-<p align="center">
-  <a href="https://data-formulator.ai"><img src="https://img.shields.io/badge/🚀_Try_Online_Demo-data--formulator.ai-F59E0B?style=for-the-badge" alt="Try Online Demo"></a>
-  &nbsp;
-  <a href="#get-started"><img src="https://img.shields.io/badge/💻_Install_Locally-uvx_|_pip-3776AB?style=for-the-badge" alt="Install Locally"></a>
-</p>
+![Experiment analysis in the running Trialdesk application](docs/trialdesk/experiment-studio.png)
 
-<p align="center">
-  <a href="https://pypi.org/project/data_formulator/"><img src="https://img.shields.io/pypi/v/data_formulator.svg?label=pypi%3A%20data_formulator" alt="PyPI"></a>&ensp;
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>&ensp;
-  <a href="https://www.youtube.com/watch?v=GfTE2FLyMrs"><img src="https://img.shields.io/badge/YouTube-white?logo=youtube&logoColor=%23FF0000" alt="YouTube"></a>&ensp;
-  <a href="https://github.com/microsoft/data-formulator/actions/workflows/python-build.yml"><img src="https://github.com/microsoft/data-formulator/actions/workflows/python-build.yml/badge.svg" alt="build"></a>&ensp;
-  <a href="https://discord.gg/mYCZMQKYZb"><img src="https://img.shields.io/badge/discord-chat-green?logo=discord" alt="Discord"></a>
-</p>
+## Original additions
 
-<!-- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/microsoft/data-formulator?quickstart=1) -->
-<!-- 
-https://github.com/user-attachments/assets/8ca57b68-4d7a-42cb-bcce-43f8b1681ce2 -->
+- A model-free Experiments route with CSV upload, a bundled synthetic example and explicit design declarations.
+- Two-arm validation with unique unit IDs, exact variant labels, finite metrics, complete-row analysis and numerical-range checks.
+- Ordinary Welch estimates and one-covariate CUPED using a common pooled coefficient, with approximate 95% intervals.
+- An exact-binomial allocation check. Serious sample-ratio mismatch blocks effect results.
+- JSON export with the complete specification, method version, assumptions, diagnostics and a SHA-256 fingerprint of the analyzed values.
+- Maintained real-application verification and a seeded statistical evaluation.
 
+Data Formulator supplies the underlying application, workspace storage, table loaders, charting, agents, reports and most of this source tree. The fork starts at [`5477f0e`](https://github.com/microsoft/data-formulator/commit/5477f0e236426dc8f74a498ec400414fba7fbc0f). Its [original README](README.upstream.md), MIT license and Microsoft notices are preserved. Live AI workflows were not configured or evaluated for this fork.
 
-## Why Data Formulator?
+## Run locally
 
-Working with data is hard for two simple reasons:
+Use Python 3.11, Node 24.22.0, Yarn 1.22.22 and uv 0.11.13.
 
-1. **Data lives everywhere.** Connecting agents to files, databases,
-   warehouses, and BI tools takes time. It is even harder when agents start
-   answering before the relationships between data sources are clear.
-2. **Questions evolve as you explore.** Each answer can lead to follow-up
-   questions, comparisons, and new directions. A long chat history makes it
-   hard to see where you are and how you got there.
+```sh
+uv sync --frozen
+yarn install --frozen-lockfile
+yarn build
+uv run --frozen python tools/verify-trialdesk.py demo-001
+```
 
-Data Formulator provides one visual workspace for exploring and analyzing data:
+Open the printed loopback URL and select **Experiments**. Create an experiment workspace, then **Load synthetic example** or upload your own CSV. Choose four distinct columns, enter the planned allocation and labels, and confirm the design declarations before **Validate and analyze**.
 
-1. **Data connectors** give agents a common way to connect to different data
-   sources and maintains a data memory to remember the relationships between them.
-2. **Data Threads** let you branch into different questions, compare paths,
-   and use visualizations to discover deeper insights without losing context.
+The helper starts the real app with a new, isolated durable home, external connectors disabled and no model credentials. Use a new run name each time. Enter `cleanup` in its terminal to stop the owned processes. Verification data and evidence remain under ignored `.audit/verification/`. For normal personal workspaces and the inherited features, see [upstream development instructions](DEVELOPMENT.md).
 
-https://github.com/user-attachments/assets/8e4f8a08-6423-4227-a1f7-559e0126ce31
+## A concrete example
 
-> [!TIP]
-> **Love the charts?** They're built on [**Flint**](https://microsoft.github.io/flint-chart/). It's an open-source visualization language that compiles compact chart specs into polished visualizations.
+The included CSV has 1,000 **synthetic** independent units and a known additive treatment effect of +2. Its generated pre-period metric is correlated with the outcome. It contains no real customer observations.
 
-## News 🔥🔥🔥
+| Estimate | Effect | Approximate 95% interval |
+| --- | ---: | --- |
+| Ordinary | 2.4184 | [-0.3888, 5.2256] |
+| CUPED | 2.1393 | [0.6598, 3.6188] |
 
-[08-15-2026] **Data Formulator 0.8 beta 1** (`0.8.0b1`) introduces:
+These values come from the actual browser export, retained as [example-analysis.json](docs/trialdesk/example-analysis.json). The input fingerprint lets a rerun identify the same selected values. A narrower interval on this example is not a promise about another dataset.
 
-- **One unified flow:** load data, ask questions, review results, and branch in the Data Thread.
-- **More data sources:** use files, local folders, databases, and platforms such as Databricks.
-- **Better charts:** explore more Flint-powered charts, recommendations, themes, and styling tools.
+## Research and course connection
 
-> Preview with `pip install --pre data_formulator==0.8.0b1` or `uvx data_formulator@0.8.0b1`.
-> Install the latest stable release (0.7) with `pip install data_formulator` or run instantly with `uvx data_formulator`.
+The numerical addition implements the single-control-variate mechanism in [Deng, Xu, Kohavi and Walker, *Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data*, WSDM 2013, section 3.2](https://exp-platform.com/Documents/2013-02-CUPED-ImprovingSensitivityOfControlledExperiments.pdf). One pooled coefficient is applied to both arms. This is a bounded implementation, not a reproduction of Bing's study, ratio-metric extensions or missing-covariate methods.
 
-See the [changelog](CHANGELOG.md) for release details.
+[Harvard CS109's public capstone](https://cs109.org/pages/projects) provides the data-preparation, statistical-analysis and reproducibility direction. [Stanford CS147's online-test assignment](https://hci.stanford.edu/courses/cs147/2014/wi/assignments/assignment09.html) is an adjacent A/B-testing exercise. Neither is presented as a completed course assignment, credential or real-user study.
 
-## Previous Updates
+## Verification
 
-Here are milestones that lead to the current design:
-- **v0.7** (05-28-2026): Turn ANY data into insights in five steps — connect governed data sources, load via agents, explore with the unified `DataAgent` + Data Thread, refine 30+ chart types (semantic chart engine powered by [Flint](https://github.com/microsoft/flint-chart)) with a style-refinement agent, and share as reports. Plus persistent sessions & workspaces and a multilingual (English/Chinese) UI.
-- **v0.6** ([Demo](https://github.com/microsoft/data-formulator/releases/tag/0.6)): Real-time insights from live data — connect to URLs and databases with automatic refresh
-- **uv support**: Faster installation with [uv](https://docs.astral.sh/uv/) — `uvx data_formulator` or `uv pip install data_formulator`
-- **v0.5.1** ([Demo](https://github.com/microsoft/data-formulator/pull/200#issue-3635408217)): Community data loaders, US Map & Pie Chart, editable reports, snappier UI
-- **v0.5**: Vibe with your data, in control — agent mode, data extraction, reports
-- **v0.2.2** ([Demo](https://github.com/microsoft/data-formulator/pull/176)): Goal-driven exploration with agent recommendations and performance improvements
-- **v0.2.1.3/4** ([Readme](https://github.com/microsoft/data-formulator/tree/main/py-src/data_formulator/data_loader) | [Demo](https://github.com/microsoft/data-formulator/pull/155)): External data loaders (MySQL, PostgreSQL, MSSQL, Azure Data Explorer, S3, Azure Blob)
-- **v0.2** ([Demos](https://github.com/microsoft/data-formulator/releases/tag/0.2)): Large data support with DuckDB integration
-- **v0.1.7** ([Demos](https://github.com/microsoft/data-formulator/releases/tag/0.1.7)): Dataset anchoring for cleaner workflows
-- **v0.1.6** ([Demo](https://github.com/microsoft/data-formulator/releases/tag/0.1.6)): Multi-table support with automatic joins
-- **Model Support**: OpenAI, Azure, Ollama, Anthropic via [LiteLLM](https://github.com/BerriAI/litellm) ([feedback](https://github.com/microsoft/data-formulator/issues/49))
-- **Python Package**: Easy local installation ([try it](#get-started))
-- **Visualization Challenges**: Test your skills ([challenges](https://github.com/microsoft/data-formulator/issues/53))
-- **Data Extraction**: Parse data from images and text ([demo](https://github.com/microsoft/data-formulator/pull/31#issuecomment-2403652717))
-- **Initial Release**: [Blog](https://www.microsoft.com/en-us/research/blog/data-formulator-exploring-how-ai-can-help-analysts-create-rich-data-visualizations/) | [Video](https://youtu.be/3ndlwt0Wi3c)
+```sh
+yarn test
+yarn tsc --noEmit
+yarn eslint src/views/ExperimentStudio.tsx
+uv run --frozen pytest tests/backend/test_experiments.py tests/backend/routes/test_experiments_api.py -q
+uv run --frozen python tools/verify-trialdesk.py http-001 --ci
+uv run --frozen python tools/evaluate-cuped.py simulation-001
+```
 
-## Overview
+Local acceptance includes 394 frontend tests, root type checking, the production build, bounded component lint and 355 backend/authentication checks. One inherited UserInfo contract is skipped because its fixture has no UserInfo endpoint. The real HTTP driver verifies exact table persistence and identical analysis after app restart. The browser journey covers loading the synthetic CSV, declaration gating, analysis, a real JSON download, result invalidation and allocation-mismatch blocking.
 
-**Data Formulator** is a Microsoft Research project for data exploration with visualizations powered by AI agents. It combines *UI interactions* with *natural language* so analysts can communicate intent, branch into alternative analyses, and share results — starting from any data format (screenshot, text, CSV, or database).
+The seeded evaluation executes 500 trials in each of five synthetic Gaussian scenarios, including null effects, negative correlation and unequal allocation. Every trial runs; none is silently excluded. [The retained evaluation](docs/trialdesk/synthetic-evaluation.json) includes bias, Monte Carlo uncertainty, empirical and reported variances, and interval coverage. It is not a guarantee for heavy tails, clustered data or arbitrary observational datasets.
 
-## Get Started
+The reusable [verification skill and feature map](.agents/skills/verify-trialdesk/SKILL.md) document the actual product paths and evidence limits.
 
-Play with Data Formulator with one of the following options. 
+## Scope and limits
 
-### Desktop downloads
+- One independent randomized unit per row, two arms, one pre-treatment covariate and one preselected outcome at a fixed horizon.
+- At least 30 units per arm and at most 100,000 rows, without sampling or silently dropping missing selected values. The minimum count does not certify valid asymptotics.
+- Covariate timing and randomization are explicit user declarations. The app cannot infer whether a covariate leaked treatment information or whether units interfere.
+- CUPED uses approximate plug-in Welch intervals. No sequential monitoring, multiplicity correction, cluster adjustment or observational causal identification is implemented.
+- The fingerprint covers the selected columns and unit-sorted values, not the whole source file. Keep the input CSV beside the exported report. Analysis does not store a separate report history.
+- New rendered acceptance was performed in the desktop browser. Narrow rendering, cloud deployment and live provider behavior remain unverified.
 
-CI builds self-contained Windows and macOS applications for pull requests and
-every update to `main`. Download the latest archives from the **Artifacts**
-section of the most recent
-[desktop builds workflow](https://github.com/microsoft/data-formulator/actions/workflows/desktop-build.yml).
-Workflow artifacts are retained for 30 days. Tagged builds are also attached
-as permanent downloads to the corresponding
-[GitHub Release](https://github.com/microsoft/data-formulator/releases).
+Dependency updates remove most inherited audit findings. The locked workspace still has a low KaTeX advisory and Python findings in oauthlib and thrift. Databricks constrains those Python dependencies below the advertised patched versions. See [method, API and dependency details](TRIALDESK.md). This local development fork is not an audited multi-user deployment. Inherited generated-Python execution is not a hostile-code security boundary.
 
-Extract the archive, then launch Data Formulator using the instructions for
-your operating system:
+## License
 
-- **Windows:** Run `Data Formulator.exe`. If Microsoft Defender SmartScreen
-  appears, select **More info**, verify that you downloaded the archive from
-  this repository, and then select **Run anyway**.
-- **macOS:** Move `Data Formulator.app` to **Applications**. The first time you
-  open it, macOS may report that Apple could not verify the app. Open
-  **System Settings → Privacy & Security**, scroll to **Security**, and select
-  **Open Anyway** for Data Formulator. Confirm by selecting **Open** when
-  prompted.
-
-> [!WARNING]
-> These are automated preview builds and are not currently code-signed or
-> notarized. Only bypass the operating-system warning when the archive was
-> downloaded directly from this repository's workflow artifacts or releases.
-
-- **Option 1: Install via uv (recommended)**
-  
-  [uv](https://docs.astral.sh/uv/) is an extremely fast Python package manager. If you have uv installed, you can run Data Formulator directly without any setup:
-  
-  ```bash
-  uvx data_formulator
-  ```
-
-  Run `uvx data_formulator --help` to see all available options, such as custom port, sandboxing mode, and data storage location.
-
-- **Option 2: Install via pip**
-  
-  Use pip for installation (recommend: install it in a virtual environment).
-  
-  ```bash
-  pip install data_formulator # install
-  python -m data_formulator # run
-  ```
-
-  Data Formulator will be automatically opened in the browser at [http://localhost:5567](http://localhost:5567).
-
-- **Option 3: Run with Docker**
-
-  ```bash
-  docker compose up --build
-  ```
-
-  Open [http://localhost:5567](http://localhost:5567) in your browser. To stop, press `Ctrl+C` or run `docker compose down`.
-
-- **Option 4: Working as developer**
-  
-  You can build Data Formulator locally and develop your own version. Check out details in [DEVELOPMENT.md](DEVELOPMENT.md).
-
-
-## Using Data Formulator
-
-Start with the data you already have: upload CSV, TSV, Excel, JSON, screenshots,
-or text; connect to databases and data platforms; or ask the analyst to find and
-load the data you need. The analyst can discover sources, clarify your request,
-propose a loading plan, and let you review the data before adding it to the
-workspace.
-
-Continue the conversation in the **Data Thread**. Ask questions in
-natural language and follow the reasoning through explanations, tables, and
-editable charts in one history. Refine a result directly, branch from any
-earlier step to explore an alternative, or delegate the next investigation to
-the analyst. When the analysis is ready, compose the results into a report to
-share.
-
-https://github.com/user-attachments/assets/164aff58-9f93-4792-b8ed-9944578fbb72
-
-## Contributing
-
-This project welcomes contributions and suggestions. Most contributions require you to
-agree to a Contributor License Agreement (CLA) declaring that you have the right to,
-and actually do, grant us the rights to use your contribution. For details, visit
-https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need
-to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the
-instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
-or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+[MIT](LICENSE), with original Microsoft and dependency notices retained.

@@ -1,0 +1,171 @@
+{
+  "seed": 20261020,
+  "numpy_version": "2.4.2",
+  "pandas_version": "2.3.3",
+  "specification_example": {
+    "table": "synthetic",
+    "unit_column": "unit",
+    "variant_column": "arm",
+    "outcome_column": "outcome",
+    "covariate_column": "pre",
+    "control": "control",
+    "treatment": "treatment",
+    "expected_treatment_fraction": 0.3,
+    "randomized_units_confirmed": true,
+    "pre_period_confirmed": true,
+    "fixed_horizon_confirmed": true
+  },
+  "scenarios": [
+    {
+      "rho": 0.0,
+      "true_effect": 0.0,
+      "treatment_fraction": 0.5,
+      "trials": 500,
+      "units_per_trial": 1000,
+      "blocked": 0,
+      "methods": {
+        "ordinary": {
+          "mean_effect": -0.003572435119503069,
+          "bias": -0.003572435119503069,
+          "bias_monte_carlo_se": 0.0027238918846822606,
+          "empirical_effect_variance": 0.0037097934997189397,
+          "mean_reported_variance": 0.004003800980797724,
+          "coverage": 0.96,
+          "coverage_monte_carlo_se": 0.008763560920082661
+        },
+        "cuped": {
+          "mean_effect": -0.0034757382745762982,
+          "bias": -0.0034757382745762982,
+          "bias_monte_carlo_se": 0.002725366215430565,
+          "empirical_effect_variance": 0.0037138105041051614,
+          "mean_reported_variance": 0.003999710911224087,
+          "coverage": 0.958,
+          "coverage_monte_carlo_se": 0.00897061870775924
+        }
+      },
+      "empirical_variance_ratio": 1.0010828107781542,
+      "oracle_variance_ratio": 1.0
+    },
+    {
+      "rho": 0.8,
+      "true_effect": 0.0,
+      "treatment_fraction": 0.5,
+      "trials": 500,
+      "units_per_trial": 1000,
+      "blocked": 0,
+      "methods": {
+        "ordinary": {
+          "mean_effect": -0.0012291422236689442,
+          "bias": -0.0012291422236689442,
+          "bias_monte_carlo_se": 0.0028496989250740945,
+          "empirical_effect_variance": 0.004060391981784225,
+          "mean_reported_variance": 0.0039991702518543774,
+          "coverage": 0.938,
+          "coverage_monte_carlo_se": 0.010784804124322337
+        },
+        "cuped": {
+          "mean_effect": 0.0034360569597310054,
+          "bias": 0.0034360569597310054,
+          "bias_monte_carlo_se": 0.001673000841624386,
+          "empirical_effect_variance": 0.0013994659080379522,
+          "mean_reported_variance": 0.001438881964365709,
+          "coverage": 0.952,
+          "coverage_monte_carlo_se": 0.009559916317625384
+        }
+      },
+      "empirical_variance_ratio": 0.34466276022518305,
+      "oracle_variance_ratio": 0.3599999999999999
+    },
+    {
+      "rho": -0.8,
+      "true_effect": 0.0,
+      "treatment_fraction": 0.5,
+      "trials": 500,
+      "units_per_trial": 1000,
+      "blocked": 0,
+      "methods": {
+        "ordinary": {
+          "mean_effect": 4.011825797016666e-05,
+          "bias": 4.011825797016666e-05,
+          "bias_monte_carlo_se": 0.002723574619389918,
+          "empirical_effect_variance": 0.0037089293536924682,
+          "mean_reported_variance": 0.004018453753142107,
+          "coverage": 0.954,
+          "coverage_monte_carlo_se": 0.009368457717255283
+        },
+        "cuped": {
+          "mean_effect": -0.0016634352357988047,
+          "bias": -0.0016634352357988047,
+          "bias_monte_carlo_se": 0.0016513140853305528,
+          "empirical_effect_variance": 0.0013634191042055403,
+          "mean_reported_variance": 0.0014360394938181995,
+          "coverage": 0.966,
+          "coverage_monte_carlo_se": 0.008104813384649892
+        }
+      },
+      "empirical_variance_ratio": 0.36760449557988273,
+      "oracle_variance_ratio": 0.3599999999999999
+    },
+    {
+      "rho": 0.8,
+      "true_effect": 0.2,
+      "treatment_fraction": 0.5,
+      "trials": 500,
+      "units_per_trial": 1000,
+      "blocked": 0,
+      "methods": {
+        "ordinary": {
+          "mean_effect": 0.19910699202623136,
+          "bias": -0.0008930079737686503,
+          "bias_monte_carlo_se": 0.0028155006080835833,
+          "empirical_effect_variance": 0.003963521837059514,
+          "mean_reported_variance": 0.003999977868607222,
+          "coverage": 0.956,
+          "coverage_monte_carlo_se": 0.009172131704244116
+        },
+        "cuped": {
+          "mean_effect": 0.19964461535360875,
+          "bias": -0.0003553846463912602,
+          "bias_monte_carlo_se": 0.0016432062375489947,
+          "empirical_effect_variance": 0.0013500633695599617,
+          "mean_reported_variance": 0.0014363861525934234,
+          "coverage": 0.948,
+          "coverage_monte_carlo_se": 0.009929350431926557
+        }
+      },
+      "empirical_variance_ratio": 0.34062216005388696,
+      "oracle_variance_ratio": 0.3599999999999999
+    },
+    {
+      "rho": 0.8,
+      "true_effect": 0.2,
+      "treatment_fraction": 0.3,
+      "trials": 500,
+      "units_per_trial": 1000,
+      "blocked": 0,
+      "methods": {
+        "ordinary": {
+          "mean_effect": 0.19808719777330958,
+          "bias": -0.0019128022266904354,
+          "bias_monte_carlo_se": 0.0030615396780697686,
+          "empirical_effect_variance": 0.004686512600197772,
+          "mean_reported_variance": 0.004759817426840477,
+          "coverage": 0.944,
+          "coverage_monte_carlo_se": 0.010282412168358165
+        },
+        "cuped": {
+          "mean_effect": 0.199217550899547,
+          "bias": -0.0007824491004529976,
+          "bias_monte_carlo_se": 0.0018451770587558007,
+          "empirical_effect_variance": 0.0017023391890793537,
+          "mean_reported_variance": 0.001714950139005004,
+          "coverage": 0.964,
+          "coverage_monte_carlo_se": 0.008331146379700699
+        }
+      },
+      "empirical_variance_ratio": 0.36324220893111747,
+      "oracle_variance_ratio": 0.3599999999999999
+    }
+  ],
+  "limits": "Synthetic independent Gaussian units with fixed arm sizes and constant additive effects. Not a real-user study, universal coverage guarantee, sequential test or full CUPED paper reproduction."
+}
