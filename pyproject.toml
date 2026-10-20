@@ -21,6 +21,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "certifi>=2026.10.19",
     "pandas",
     "flask",
     "flask-cors",
@@ -113,3 +114,11 @@ dev-dependencies = [
 name = "microsoft-package-feed"
 url = "https://packagefeedproxy.microsoft.io/pypi/simple"
 default = true
+
+[[tool.uv.index]]
+name = "pypi-certifi"
+url = "https://pypi.org/simple"
+explicit = true
+
+[tool.uv.sources]
+certifi = { index = "pypi-certifi" }
