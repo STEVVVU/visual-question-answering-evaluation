@@ -10,7 +10,9 @@
 
 ## Sub-features
 
-Answer cache excludes gold; score cache includes annotations and scorer revision. Manual freeform remains explicitly unscored.
+Answer cache excludes gold; score cache includes annotations and scorer revision. Scorer `mode-exact-v3` additionally accepts an unambiguous explicit `Answer: C` letter, with choice bounds and rejection of prose/multiple answers covered in `tests/backend/test_vqa.py`. Existing saved scores retain their old scorer. Manual freeform remains explicitly unscored.
+
+`tools/rescore-vqa-validation.py <retained-validation-directory> <new-output.json>` reuses the production scorer on preserved validation exports without inference. It checks export hashes, rejects final-test metadata and refuses output overwrite. `tools/test-vqa-benchmark.py` covers those boundaries separately from quality measurements.
 
 ## How to get to it (user POV)
 

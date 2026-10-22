@@ -16,7 +16,7 @@ from PIL import Image
 
 MODEL = "HuggingFaceTB/SmolVLM-256M-Instruct"
 REVISION = "7e3e67edbbed1bf9888184d9df282b700a323964"
-SCORER = "mode-exact-v2"
+SCORER = "mode-exact-v3"
 PROMPT = "image-question-choices-v1"
 GENERATION = {"max_new_tokens": 32, "do_sample": False}
 BOOT = uuid.uuid4().hex
@@ -111,7 +111,7 @@ def score(item, prediction):
         return {"status": "manual_required", "correct": None}
     predicted = normalize(prediction)
     if item["answer_mode"] == "mcq":
-        label = re.fullmatch(r"\(?([A-Ja-j])\)?[.)]?", prediction.strip())
+        label = re.fullmatch(r"(?:Answer:\s*)?\(?([A-J])\)?[.)]?", prediction.strip(), re.IGNORECASE)
         selected = ord(label[1].upper()) - ord("A") if label else None
         labeled_choice = re.fullmatch(r"([A-Ja-j])[.)]\s*(.+)", prediction.strip())
         if labeled_choice:

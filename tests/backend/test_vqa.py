@@ -51,6 +51,18 @@ def test_mcq_and_manual_mode_routing():
     assert score({**item, "answer_mode": "manual"}, "anything")["correct"] is None
 
 
+@pytest.mark.parametrize("prediction,correct", [
+    (" Answer: A", True), ("answer: a", True), ("Answer: (A).", True),
+    ("Answer: B", False), ("Answer: C", False), ("Answer: Z", False),
+    ("Answer: A or B", False), ("Answer: A\nAnswer: B", False),
+    ("Answer: A because red", False), ("The answer is A", False),
+    ("Answer: A. blue", False), ("Answer: red", False),
+])
+def test_mcq_explicit_answer_letter_is_bounded_and_unambiguous(prediction, correct):
+    item = annotation({**fixture(), "choices": ["red", "blue"], "answer_mode": "mcq", "answer_label": 0})
+    assert score(item, prediction)["correct"] is correct
+
+
 @pytest.mark.parametrize("change", [{"answer_mode": "judge"}, {"question": ""}, {"split": "../../"},
                                    {"choices": ["red", "RED"]}, {"answer_mode": "mcq", "answer_label": True},
                                    {"choices": "red"}, {"aliases": [None]}, {"context": "x" * 4001}])

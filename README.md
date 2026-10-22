@@ -1,6 +1,6 @@
 # Visual question answering evaluation
 
-The [frozen ScienceQA benchmark plan](docs/benchmark-plan.md) adds pinned public image-question validation/test subsets, actual uncached CPU inference, five repeated measurements, chance baselines and retained quality/latency/memory/error evidence. Start with `uv run --frozen python tools/verify-trialdesk.py benchmark-smoke --ci --port 8432 --benchmark-vqa smoke`. Numerical quality/performance results remain pending an isolated measured campaign. The optional manual workflow separates validation, profiling and final held-out test; data uses the official ScienceQA CC BY-NC-SA4.0 license and is never shipped in Git.
+The [ScienceQA validation results](docs/validation-results.md) retain five uncached CPU repeats on 16 fixed validation questions: all 80 image evaluations completed, median 264.91 seconds per 16 items and model peak RSS 3.460–3.521 GiB. Original scoring was 1/16; a deterministic `Answer: C` parser correction re-scores the same saved predictions to 12/16, with the original evidence preserved. This is validation on 16 unique items; final held-out evaluation and separate profiling remain pending. Follow the [frozen plan](docs/benchmark-plan.md) and start with `uv run --frozen python tools/verify-trialdesk.py benchmark-smoke --ci --port 8432 --benchmark-vqa smoke`. The workflow separates validation/profile/test; official ScienceQA data is CC BY-NC-SA 4.0 and stays outside Git.
 
 A local dataset annotation and multimodal evaluation workspace built on the full [Trialdesk](README.trialdesk.md) and [Microsoft Data Formulator](README.upstream.md) applications. The inherited workspace, identity, table loaders, charting, agents and experiment analysis remain available. This extension adds `/vqa` for owned images and an actual offline vision model.
 
@@ -39,7 +39,7 @@ The application verifies every model-file checksum, starts a bounded separate CP
 
 ## Evaluation semantics
 
-- MCQ accepts an exact choice, a letter or a consistent letter plus choice. It rejects ambiguous prose. Exact mode case-folds, trims whitespace and terminal `.?!`, and compares the gold answer or explicit aliases.
+- MCQ accepts an exact choice, a letter, an explicit `Answer: C` letter or a consistent letter plus choice. Scorer `mode-exact-v3` rejects ambiguous prose and out-of-range choices; earlier runs retain their original scorer and scores. Exact mode case-folds, trims whitespace and terminal `.?!`, and compares the gold answer or explicit aliases.
 - Manual mode retains the prediction with `manual_required`; it does not invent a judge score. No Gemini, paid API or automatic subjective judge is configured.
 - Answer cache keys include canonical image bytes, question, context, choices, answer mode, model revision/files, prompt version and generation configuration. Gold is excluded from model input. Score keys separately include the prediction, annotation revision and scorer version. Editing gold reuses answers and recomputes scores; editing the question invalidates answers.
 - A version captures the whole canonical split. Future edits never mutate it. Runs record their exact version, model files, generation/scorer versions, timestamps, cache decisions, terminal state and partial results.
