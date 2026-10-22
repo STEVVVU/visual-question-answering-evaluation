@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "run": {
+    "id": "39745041299",
+    "url": "https://github.com/STEVVVU/visual-question-answering-evaluation/actions/runs/39745041299",
+    "source_commit": "c556992069d1318c092e59c155fe3eb298052709",
+    "source_dirty": false,
+    "benchmark_json_sha256": "355dfe34c2718ef2544e4a391a4fc9fd4da0cdf480d9e28e9715d57c6ce36a3e"
+  },
+  "dataset": {
+    "name": "ScienceQA",
+    "split": "test",
+    "items": 128,
+    "repeats": 5,
+    "executions": 640,
+    "embedded_manifest_sha256": "948e90d3612a6545d07eb53196443d2c22f5a428f7566343918bbf05a0128d0e",
+    "official_revision": "2cbf8318e07b9ece895bb2ae605e71e38d623264",
+    "image_mirror_revision": "f18b0a70359ebfb41f658fd564208d0355b013f4",
+    "license": "CC-BY-NC-SA-4.0",
+    "official_source": "https://github.com/lupantech/ScienceQA/tree/2cbf8318e07b9ece895bb2ae605e71e38d623264",
+    "license_source": "https://github.com/lupantech/ScienceQA/blob/2cbf8318e07b9ece895bb2ae605e71e38d623264/LICENSE-DATA",
+    "image_source": "https://huggingface.co/datasets/derek-thomas/ScienceQA/tree/f18b0a70359ebfb41f658fd564208d0355b013f4"
+  },
+  "accuracy": {
+    "correct_per_repeat": 77,
+    "total_per_repeat": 128,
+    "fraction": 0.6015625,
+    "wilson_95": [
+      0.5149824069,
+      0.6822241489
+    ],
+    "unrecognized_per_repeat": 2,
+    "uniform_choice_correct_by_seed": [
+      43,
+      47,
+      60,
+      46,
+      49
+    ],
+    "uniform_choice_expected_fraction": 0.383984375,
+    "subjects": {
+      "natural_science": 88,
+      "social_science": 39,
+      "language_science": 1
+    }
+  },
+  "execution": {
+    "failed_items": 0,
+    "timed_out_items": 0,
+    "cache_hits": 0,
+    "vision_forwards": 640,
+    "busy_admission_rejections": 80,
+    "completed_exports": 80
+  },
+  "runtime": {
+    "end_to_end_seconds_per_repeat": {
+      "median": 2226.2013,
+      "min": 2223.0817,
+      "max": 2242.113
+    },
+    "cpu_process_seconds_per_repeat": {
+      "median": 8447.1956,
+      "min": 8441.4511,
+      "max": 8491.9318
+    },
+    "items_per_second": {
+      "median": 0.057497,
+      "min": 0.057089,
+      "max": 0.057578
+    },
+    "item_seconds": {
+      "p50_median_across_repeats": 17.0208,
+      "p50_min": 16.8951,
+      "p50_max": 17.1173,
+      "p95_median_across_repeats": 20.9864,
+      "p95_min": 20.9008,
+      "p95_max": 21.0762
+    },
+    "generation_seconds": {
+      "p50_median_across_repeats": 16.8085,
+      "p50_min": 16.6561,
+      "p50_max": 16.9046,
+      "p95_median_across_repeats": 20.6853,
+      "p95_min": 20.6349,
+      "p95_max": 20.7911
+    },
+    "model_process_peak_rss_kib": {
+      "median": 3684036,
+      "min": 3669756,
+      "max": 3734108
+    },
+    "cold_model_process_per_batch": true,
+    "os_file_cache_flushed": false
+  },
+  "environment": {
+    "cpu": "Intel Xeon Platinum 8370C @ 2.80 GHz",
+    "virtualization": "Microsoft",
+    "logical_cpus": 4,
+    "python": "3.11.15",
+    "torch": "2.11.0+cpu",
+    "transformers": "5.20.2",
+    "pillow": "13.0.0",
+    "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+    "model_revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+  },
+  "limitations": [
+    "The 128-item hosted prepared manifest was not retained for byte-for-byte reconciliation with the independently prepared local manifest.",
+    "Source IDs, annotations, provenance, and decoded pixels match. PNG byte encodings and full prepared-manifest byte hashes differ; the complete hosted byte stream is unavailable for reconciliation.",
+    "Model pretraining contamination is unknown.",
+    "The result covers one fixed image-bearing ScienceQA subset and does not establish general VQA quality.",
+    "The run does not support a speedup claim.",
+    "The model interface exposes no confidence probabilities, so calibration was not measured."
+  ]
+}
