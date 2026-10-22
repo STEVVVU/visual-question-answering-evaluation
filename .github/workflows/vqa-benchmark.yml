@@ -27,7 +27,7 @@ jobs:
       - run: uv sync --frozen
       - run: uv venv .tooling/model-env --python 3.11
       - run: uv pip install --python .tooling/model-env/bin/python --index-url https://download.pytorch.org/whl/cpu torch==2.11.0 torchvision==0.26.0
-      - run: uv pip install --python .tooling/model-env/bin/python transformers==5.20.2 safetensors==0.8.0 Pillow==13.0.0
+      - run: uv pip install --python .tooling/model-env/bin/python --index-url https://pypi.org/simple transformers==5.20.2 safetensors==0.8.0 Pillow==13.0.0
       - run: uv run --frozen python tools/download-vqa-model.py
       - run: uv run --frozen python tools/prepare-vqa-benchmark.py --download
       - run: uv run --frozen python tools/test-vqa-benchmark.py
