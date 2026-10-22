@@ -1,0 +1,60 @@
+name: Pinned ScienceQA CPU benchmark
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        type: choice
+        options: [validation, test, profile]
+        default: validation
+        description: Validate and profile before dispatching the final held-out test
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    env:
+      VQA_MODEL_PATH: ${{ github.workspace }}/.tooling/smolvlm
+      VQA_MODEL_PYTHON: ${{ github.workspace }}/.tooling/model-env/bin/python
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: 0.11.13
+          python-version: '3.11'
+      - run: uv sync --frozen
+      - run: uv venv .tooling/model-env --python 3.11
+      - run: uv pip install --python .tooling/model-env/bin/python --index-url https://download.pytorch.org/whl/cpu torch==2.11.0 torchvision==0.26.0
+      - run: uv pip install --python .tooling/model-env/bin/python transformers==5.20.2 safetensors==0.8.0 Pillow==13.0.0
+      - run: uv run --frozen python tools/download-vqa-model.py
+      - run: uv run --frozen python tools/prepare-vqa-benchmark.py --download
+      - run: uv run --frozen python tools/test-vqa-benchmark.py
+      - run: uv run --frozen pytest tests/backend/test_vqa.py -q
+      - run: uv run --frozen python tools/verify-trialdesk.py benchmark-smoke-${{ github.run_id }} --ci --port 8432 --benchmark-vqa smoke
+      - name: Run frozen evaluation or separate profile
+        shell: bash
+        env:
+          BENCH_STAGE: ${{ inputs.stage }}
+        run: |
+          mkdir -p .audit/runtime
+          uv pip freeze --python .tooling/model-env/bin/python > .audit/runtime/model-freeze.txt
+          uname -a > .audit/runtime/uname.txt
+          lscpu > .audit/runtime/lscpu.txt
+          df -h > .audit/runtime/disk.txt
+          uptime > .audit/runtime/load.txt
+          if [ "$BENCH_STAGE" = profile ]; then
+            export VQA_PROFILE_DIR="$GITHUB_WORKSPACE/.audit/profiles"
+            BENCH_SPLIT=validation
+          else
+            BENCH_SPLIT="$BENCH_STAGE"
+          fi
+          uv run --frozen python tools/verify-trialdesk.py benchmark-${BENCH_STAGE}-${{ github.run_id }} --ci --port 8432 --benchmark-vqa ".tooling/scienceqa/${BENCH_SPLIT}-manifest.json"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: vqa-benchmark-${{ inputs.stage }}-${{ github.sha }}
+          path: .audit/
+          include-hidden-files: true
+          retention-days: 14

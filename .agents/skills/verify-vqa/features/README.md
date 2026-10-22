@@ -2,6 +2,7 @@
 
 | Feature | User path | Driver proof |
 | --- | --- | --- |
+| Held-out benchmark | Actual upload/freeze/run/export API with fresh workspaces and pinned ScienceQA image questions | Separate validation/profile/test, five uncached repeated CPU runs, vision execution, chance baseline, quality/latency/RSS/error and busy-admission accounting; smoke proves visible no-model failure and cleanup |
 | Annotation | `/vqa` → workspace → upload PNG/question → save | Image decode limits, canonical schema and durable read |
 | Versions | Dataset → Freeze version | Immutable manifest/hash; revision creates different version |
 | Evaluation | Experiments → Run | Real local model, bounded generation, persisted partial/failure/cancel status |

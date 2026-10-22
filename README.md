@@ -1,5 +1,7 @@
 # Visual question answering evaluation
 
+The [frozen ScienceQA benchmark plan](docs/benchmark-plan.md) adds pinned public image-question validation/test subsets, actual uncached CPU inference, five repeated measurements, chance baselines and retained quality/latency/memory/error evidence. Start with `uv run --frozen python tools/verify-trialdesk.py benchmark-smoke --ci --port 8432 --benchmark-vqa smoke`. Numerical quality/performance results remain pending an isolated measured campaign. The optional manual workflow separates validation, profiling and final held-out test; data uses the official ScienceQA CC BY-NC-SA4.0 license and is never shipped in Git.
+
 A local dataset annotation and multimodal evaluation workspace built on the full [Trialdesk](README.trialdesk.md) and [Microsoft Data Formulator](README.upstream.md) applications. The inherited workspace, identity, table loaders, charting, agents and experiment analysis remain available. This extension adds `/vqa` for owned images and an actual offline vision model.
 
 Annotate a PNG/JPEG with a question, context, answer mode and gold answer. Freeze a train, validation or test split into an immutable SHA-256 manifest. Evaluate a pinned local SmolVLM model, inspect raw predictions, compare runs from the same version and scorer, and export the manifest, images, predictions, cache keys and model-file checksums as JSON.

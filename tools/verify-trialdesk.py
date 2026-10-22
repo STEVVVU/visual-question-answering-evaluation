@@ -21,6 +21,7 @@ parser.add_argument("run_name")
 parser.add_argument("--port", type=int, default=8430)
 parser.add_argument("--ci", action="store_true")
 parser.add_argument("--vqa", action="store_true", help="Include the VQA HTTP journey")
+parser.add_argument("--benchmark-vqa", help="Pinned benchmark manifest path, or smoke for a no-inference lifecycle check")
 args = parser.parse_args()
 if not args.run_name.replace("-", "").replace("_", "").isalnum():
     parser.error("Use a unique alphanumeric run name")
@@ -91,6 +92,9 @@ def launch():
         "HOST": "127.0.0.1",
         "PYTHONUTF8": "1",
     })
+    if args.benchmark_vqa == "smoke":
+        env.pop("VQA_MODEL_PATH", None)
+        env.pop("VQA_MODEL_PYTHON", None)
     child = subprocess.Popen(
         [sys.executable, "-m", "data_formulator", "--host", "127.0.0.1",
          "--port", str(args.port), "--data-dir", str(home),
@@ -193,7 +197,7 @@ def experiment():
 try:
     launch()
     print(f"READY {base}; commands doctor, drive, experiment, restart, verify, cleanup", flush=True)
-    commands = ["drive", "experiment", *(["vqa"] if args.vqa else []), "restart", "verify", "cleanup"] if args.ci else sys.stdin
+    commands = (["benchmark-vqa", "cleanup"] if args.benchmark_vqa else ["drive", "experiment", *(["vqa"] if args.vqa else []), "restart", "verify", "cleanup"]) if args.ci else sys.stdin
     for line in commands:
         command = line.strip()
         if command == "cleanup":
@@ -210,6 +214,10 @@ try:
             import runpy
             journey = runpy.run_path(str(ROOT / "tools" / "verify-vqa-journey.py"))["journey"]
             vqa_record = journey(api, run, workspace_id, evidence)
+        elif command == "benchmark-vqa":
+            import runpy
+            benchmark = runpy.run_path(str(ROOT / "tools" / "benchmark-vqa-journey.py"))["benchmark"]
+            benchmark(api, run, workspace_id, evidence, args.benchmark_vqa)
         elif command == "restart":
             stop()
             launch()

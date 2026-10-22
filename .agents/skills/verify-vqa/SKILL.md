@@ -27,6 +27,10 @@ Retain `.audit/verification/<run>/result.json`, export JSON, server logs and iso
 
 Stop only the driver's child tree; retain artifacts and confirm its listener stopped. No user home or unrelated process is touched.
 
+## Frozen evaluation benchmark
+
+Reuse this owned launcher with `tools/verify-trialdesk.py <unique-run> --ci --port 8432 --benchmark-vqa smoke` for a no-inference lifecycle check. Follow `docs/benchmark-plan.md` for explicit pinned ScienceQA preparation, separate validation/profile and final held-out test stages. The maintained HTTP journey is `tools/benchmark-vqa-journey.py`; `tools/test-vqa-benchmark.py` checks deterministic statistics and absence of gold in model inputs. `.github/workflows/vqa-benchmark.yml` uses an isolated CPU model environment and retains full evidence. No local inference/load campaigns run without main's resource grant.
+
 ## Helpers
 
 `tools/verify-vqa.py` is the maintained HTTP driver. `tools/verify-trialdesk.py` retains inherited table/experiment coverage. See [feature map](features/README.md).
