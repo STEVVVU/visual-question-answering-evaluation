@@ -21,7 +21,26 @@ Uniform-choice seeds 0–4 scored 4/6/8/5/6 correct of 16: median 37.5%, range 2
 | Per-repeat generation median, seconds | 18.552 | 18.466–18.565 |
 | Model process peak RSS, GiB | 3.488 | 3.460–3.521 |
 
-Each eight-item batch loads a fresh CPU model; end-to-end time includes that startup and actual service polling/export overhead. Individual image tensors used 5–17 crops under the shipped processor defaults. Per-repeat maximum item times ranged 19.05–19.34 seconds; 16 samples per repeat do not establish a useful p99. Total campaign elapsed time was 1,332.81 seconds. Re-scoring does not change the retained runtime measurements. The next diagnosis should profile the separate eight-image validation workload; operation-level attribution requires native PyTorch profiling before changing runtime/model settings. The final test should run only after source review of this scorer correction and profiling decisions.
+Each eight-item batch loads a fresh CPU model; end-to-end time includes that startup and actual service polling/export overhead. Individual image tensors used 5–17 crops under the shipped processor defaults. Per-repeat maximum item times ranged 19.05–19.34 seconds; 16 samples per repeat do not establish a useful p99. Total campaign elapsed time was 1,332.81 seconds. Re-scoring does not change the retained runtime measurements. The final test remains gated on main review of the scorer correction and separate profile evidence below.
+
+## Separate native CPU profile
+
+[Profile run 39741751233](https://github.com/STEVVVU/visual-question-answering-evaluation/actions/runs/39741751233), clean source `c556992069d1318c092e59c155fe3eb298052709`, executed the first eight frozen validation items. All eight completed uncached, with six correct, zero unrecognized answers/errors, one expected busy-admission rejection and successful cleanup. Their source IDs, raw predictions, prompt hashes and pixel shapes match the prior validation evidence. This is an integrity check on the same validation items, not eight additional independent quality samples.
+
+The profiler retained exactly eight native tables with 100 operator/shape rows each. Actual Torch is 2.11.0+cpu, Release build, MKL/oneDNN/OpenMP, AVX2 capability; intra-op/inter-op thread counts are 4/4. The runner has four logical CPUs on AMD EPYC 7763. These are build/runtime facts, not proof that a different backend or thread count would be faster. The normal model settings remain unchanged.
+
+| Operator family | Sum of displayed native self CPU seconds across eight items |
+| --- | ---: |
+| `aten::addmm` |128.02|
+| `aten::bmm` |36.99|
+| `aten::mm` |15.10|
+| `aten::_softmax` |11.91|
+
+These diagnostic values come from the 100 displayed rows per native table; rounded native self-time totals are 219.70s. Dominant projections use shapes such as `[17408,768]` and `[17408,3072]`, corresponding to 17 image crops ×1024 vision tokens; the two 13-crop items use 13312 tokens. The attention tables' 9.56 GB allocation rows sum 12 calls and must not be read as simultaneous live memory or a leak. Instrumented whole-process peak RSS was 3.99 GiB. Native memory columns cover tensor allocations within generation, separately from startup/model weights and process RSS.
+
+All profiler timings/RSS are excluded from the five-repeat runtime results. The instrumented batch took 264.63s; cProfile attributes 26.14s to producing native receipts, primarily event parsing/grouping, in addition to tracing overhead inside model execution. This is bounded profiling work, not a production-path regression. The earlier cProfile-only run used another VM; no causal overhead ratio follows from comparing those runs. No avoidable product defect is established by a hot dense-matrix operator. The smallest next step is the unchanged final held-out evaluation after main review, without tuning model/prompt/generation/thread settings on this evidence.
+
+Reproduce through the workflow's separate `profile` stage. Native artifact `vqa-benchmark-profile-c556992069d1318c092e59c155fe3eb298052709` retains `profiles/model-2568-item-0.txt` through `item-7.txt`, cProfile and the validation export. Profile `benchmark.json` SHA256 is `55131559965acdf8e5009b4fa2271d33b1bb4bf847cb6b48f899ef09a41382a0`; export SHA256 is `de7b0bdf0539f6c6f71eceac8e4e36a69bb1761e93f207738e59430434b088ce`. The raw receipt header contains only item UUID/index and Torch configuration; tables contain operator shapes/timing/allocation metadata, without question/gold text, tensor values, model data or Chrome traces.
 
 Reproduce through the manual `validation` stage of `.github/workflows/vqa-benchmark.yml`, or provision the exact isolated CPU environment, run `tools/download-vqa-model.py`, `tools/prepare-vqa-benchmark.py --download`, then `tools/verify-trialdesk.py <unique-run> --ci --port 8432 --benchmark-vqa .tooling/scienceqa/validation-manifest.json`. Downloads are explicit; the official ScienceQA data license is CC BY-NC-SA 4.0. Never tune on the separate final test.
 
