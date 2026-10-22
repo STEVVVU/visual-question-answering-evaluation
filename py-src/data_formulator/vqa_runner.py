@@ -1,5 +1,6 @@
 """Offline, bounded CPU model process. Input contains no gold annotations."""
 import base64
+from contextlib import nullcontext
 import hashlib
 import io
 import json
@@ -11,6 +12,24 @@ import time
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+
+
+def cpu_profile_context(torch, index):
+    if not os.environ.get("VQA_PROFILE_DIR") or index >= 8:
+        return nullcontext()
+    return torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU],
+        record_shapes=True, profile_memory=True, with_stack=False)
+
+
+def write_cpu_profile(torch, profile, index, item_id):
+    root = Path(os.environ["VQA_PROFILE_DIR"]).resolve()
+    root.mkdir(parents=True, exist_ok=True)
+    metadata = {"item_index": index, "item_id": item_id, "torch_version": torch.__version__,
+        "threads": torch.get_num_threads(), "interop_threads": torch.get_num_interop_threads(),
+        "torch_build": torch.__config__.show(), "scope": "model.generate CPU operators; profiled timings excluded from comparisons"}
+    table = profile.key_averages(group_by_input_shape=True).table(sort_by="self_cpu_time_total", row_limit=100)
+    with (root / f"model-{os.getpid()}-item-{index}.txt").open("x", encoding="utf-8") as receipt:
+        receipt.write(json.dumps(metadata, indent=2) + "\n\n" + table + "\n")
 
 
 def main():
@@ -32,7 +51,7 @@ def main():
     vision = model.model.vision_model
     hook = vision.register_forward_hook(lambda *_: vision_calls.__setitem__(0, vision_calls[0] + 1))
     with output.open("w", encoding="utf-8") as out:
-        for item in request["items"]:
+        for index, item in enumerate(request["items"]):
             item_started = time.perf_counter()
             image = Image.open(io.BytesIO(base64.b64decode(item["image"]))).convert("RGB")
             question = item["question"]
@@ -48,8 +67,10 @@ def main():
             inputs = processor(text=prompt, images=[image], return_tensors="pt")
             before = vision_calls[0]
             generation_started = time.perf_counter()
-            with torch.inference_mode():
+            with cpu_profile_context(torch, index) as profile, torch.inference_mode():
                 generated = model.generate(**inputs, **request["generation"])
+            if profile is not None:
+                write_cpu_profile(torch, profile, index, item["id"])
             generation_seconds = time.perf_counter() - generation_started
             prediction = processor.batch_decode(generated[:, inputs["input_ids"].shape[1]:], skip_special_tokens=True)[0]
             record = {"id": item["id"], "prediction": prediction, "vision_forwards": vision_calls[0] - before,

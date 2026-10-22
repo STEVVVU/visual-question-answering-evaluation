@@ -31,6 +31,8 @@ Stop only the driver's child tree; retain artifacts and confirm its listener sto
 
 Reuse this owned launcher with `tools/verify-trialdesk.py <unique-run> --ci --port 8432 --benchmark-vqa smoke` for a no-inference lifecycle check. Follow `docs/benchmark-plan.md` for explicit pinned ScienceQA preparation, separate validation/profile and final held-out test stages. The maintained HTTP journey is `tools/benchmark-vqa-journey.py`; `tools/test-vqa-benchmark.py` checks deterministic statistics and absence of gold in model inputs. `.github/workflows/vqa-benchmark.yml` uses an isolated CPU model environment and retains full evidence. No local inference/load campaigns run without main's resource grant.
 
+The separate profile stage enables `VQA_PROFILE_DIR` for eight frozen validation items only. The actual runner retains cProfile plus at most eight native CPU operator/shape/memory tables (100 rows each) around unchanged generation, with Torch build/thread metadata. Normal runs use `nullcontext`. Native tracing adds overhead and is excluded from performance comparisons; no Chrome trace, model/tensor values or gold is exported. Re-drive the existing hosted profile stage after the stubbed routing/no-gold checks in `tools/test-vqa-benchmark.py` pass. Final held-out test remains separate and requires main's review gate.
+
 ## Helpers
 
 `tools/verify-vqa.py` is the maintained HTTP driver. `tools/verify-trialdesk.py` retains inherited table/experiment coverage. See [feature map](features/README.md).
