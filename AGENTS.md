@@ -1,4 +1,6 @@
-# Trialdesk
+# Visual question answering evaluation
+
+The VQA extension uses `.agents/skills/verify-vqa/SKILL.md` and `tools/verify-vqa.py`. Read that map before changing VQA behavior. Core deterministic tests are `tests/backend/test_vqa.py`; the actual CPU model proof requires explicit local configuration and never downloads implicitly. Keep the model runner free of gold annotations and remote code. Preserve separate answer/scoring cache provenance, immutable manifests and visible failed/partial states. Use Node 24 for inherited frontend checks.
 
 Trialdesk extends the complete Microsoft Data Formulator application. Preserve the MIT license, Microsoft notices, original README and upstream history. Keep `upstream` pointed at Microsoft. Publish only to the user's fork; do not create release tags or run inherited deployment workflows.
 

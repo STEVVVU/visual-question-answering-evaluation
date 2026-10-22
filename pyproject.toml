@@ -21,6 +21,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "Pillow==13.0.0",
     "certifi>=2026.10.19",
     "pandas",
     "flask",
@@ -122,3 +123,4 @@ explicit = true
 
 [tool.uv.sources]
 certifi = { index = "pypi-certifi" }
+Pillow = { index = "pypi-certifi" }

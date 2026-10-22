@@ -20,6 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("run_name")
 parser.add_argument("--port", type=int, default=8430)
 parser.add_argument("--ci", action="store_true")
+parser.add_argument("--vqa", action="store_true", help="Include the VQA HTTP journey")
 args = parser.parse_args()
 if not args.run_name.replace("-", "").replace("_", "").isalnum():
     parser.error("Use a unique alphanumeric run name")
@@ -33,6 +34,7 @@ workspace_id = "trialdesk-verification"
 evidence: dict = {"run": args.run_name, "base": base, "actions": []}
 child: subprocess.Popen | None = None
 analysis_record: dict | None = None
+vqa_record: dict | None = None
 log = (run / "server.log").open("a", encoding="utf-8")
 
 
@@ -42,8 +44,8 @@ def port_free() -> bool:
         return probe.connect_ex(("127.0.0.1", args.port)) != 0
 
 
-def api(route: str, payload=None, form=None, expected="success"):
-    headers = {"X-Workspace-Id": workspace_id}
+def api(route: str, payload=None, form=None, expected="success", workspace=None):
+    headers = {"X-Workspace-Id": workspace or workspace_id}
     body = None
     if payload is not None:
         headers["Content-Type"] = "application/json"
@@ -153,6 +155,10 @@ def verify():
     digest = hashlib.sha256(json.dumps(rows, sort_keys=True).encode()).hexdigest()
     evidence["actions"].append({"action": "read-table", "rows": len(rows), "sha256": digest})
     print("DRIVE passed: exact 120-row table through production upload/read routes", flush=True)
+    if vqa_record is not None:
+        persisted = api(f"/api/vqa/runs/{vqa_record['run']['id']}/export")
+        assert persisted == vqa_record, "VQA export changed across restart"
+        evidence["actions"].append({"action": "vqa-persisted-export", "run": persisted["run"]["id"]})
     if analysis_record is not None:
         report = api("/api/experiments/analyze", analysis_record["specification"])
         assert report == analysis_record, "Analysis changed after restart without an input change"
@@ -187,7 +193,7 @@ def experiment():
 try:
     launch()
     print(f"READY {base}; commands doctor, drive, experiment, restart, verify, cleanup", flush=True)
-    commands = ["drive", "experiment", "restart", "verify", "cleanup"] if args.ci else sys.stdin
+    commands = ["drive", "experiment", *(["vqa"] if args.vqa else []), "restart", "verify", "cleanup"] if args.ci else sys.stdin
     for line in commands:
         command = line.strip()
         if command == "cleanup":
@@ -200,6 +206,10 @@ try:
             verify()
         elif command == "experiment":
             experiment()
+        elif command == "vqa":
+            import runpy
+            journey = runpy.run_path(str(ROOT / "tools" / "verify-vqa-journey.py"))["journey"]
+            vqa_record = journey(api, run, workspace_id, evidence)
         elif command == "restart":
             stop()
             launch()

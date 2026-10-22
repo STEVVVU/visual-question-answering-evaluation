@@ -1,0 +1,40 @@
+name: VQA checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATA_FORMULATOR_HOME: ${{ github.workspace }}/.audit/ci-tests
+      HOST: 127.0.0.1
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: 0.11.13
+          python-version: '3.11'
+      - run: npm install --prefix .tooling --no-save --package-lock=false yarn@1.22.22
+      - run: uv sync --frozen
+      - run: node .tooling/node_modules/yarn/bin/yarn.js install --frozen-lockfile
+      - run: node .tooling/node_modules/yarn/bin/yarn.js test
+      - run: node node_modules/typescript/bin/tsc --noEmit
+      - run: node node_modules/eslint/bin/eslint.js src/views/VqaStudio.tsx
+      - run: uv run --frozen pytest tests/backend/test_vqa.py tests/backend/test_vqa_model_process.py tests/backend/test_experiments.py tests/backend/routes/test_experiments_api.py tests/backend/routes/test_upload_parquet_conversion.py tests/backend/routes/test_sample_table_pagination.py tests/backend/routes/test_session_export_import.py tests/backend/auth tests/backend/security/test_startup_safety.py tests/backend/security/test_global_model_security.py -q
+      - run: node .tooling/node_modules/yarn/bin/yarn.js build
+      - run: uv run --frozen python tools/verify-vqa.py ci-${{ github.run_id }} --ci --port 8432
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: vqa-verification
+          path: .audit/verification/

@@ -80,6 +80,7 @@ import {
 } from "react-router-dom";
 import { About } from '../views/About';
 import { ExperimentStudio } from '../views/ExperimentStudio';
+import { VqaStudio } from '../views/VqaStudio';
 import { MessageSnackbar } from '../views/MessageSnackbar';
 import { ChartRenderService } from '../views/ChartRenderService';
 import { DictTable } from '../components/ComponentType';
@@ -303,6 +304,7 @@ const PageNavMenu: React.FC<{ isAboutPage: boolean; isExperimentPage: boolean }>
         { to: '/about', label: t('appBar.about'), selected: isAboutPage },
         { to: '/app', label: t('appBar.app'), selected: !isAboutPage && !isExperimentPage },
         { to: '/experiments', label: 'Experiments', selected: isExperimentPage },
+        { to: '/vqa', label: 'VQA evaluation', selected: false },
     ];
     const currentLabel = pages.find(page => page.selected)?.label ?? '';
 
@@ -1105,6 +1107,8 @@ const AppShell: FC = () => {
     const exitSession = useExitSession();
     const inSession = isAppPage && !!activeWorkspace;
 
+    if (location.pathname === '/vqa') return <Outlet />;
+
     return (
         <Box sx={{
             position: 'absolute',
@@ -1163,6 +1167,7 @@ const AppShell: FC = () => {
                             <TopNavButton to="/about" label={t('appBar.about')} selected={isAboutPage} />
                             <TopNavButton to="/app" label={t('appBar.app')} selected={isAppPage && !isExperimentPage} />
                             <TopNavButton to="/experiments" label="Experiments" selected={isExperimentPage} />
+                            <TopNavButton to="/vqa" label="VQA evaluation" selected={false} />
                         </Box>
                         </>
                         )}
@@ -1705,6 +1710,10 @@ export const AppFC: FC<AppFCProps> = function AppFC(appProps) {
                 {
                     path: "experiments",
                     element: <ExperimentStudio />,
+                },
+                {
+                    path: "vqa",
+                    element: <VqaStudio />,
                 },
                 {
                     path: "about",
