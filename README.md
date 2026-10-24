@@ -1,5 +1,14 @@
 # Visual question answering evaluation
 
+## Guide
+
+- [Architecture and execution guide](#architecture-and-execution-guide)
+- [Run the application](#run-the-application)
+- [Configure the real local model](#configure-the-real-local-model)
+- [Evaluation semantics](#evaluation-semantics)
+- [Verification](#verification)
+- [Sources and attribution](#sources-and-attribution)
+
 The [answer-cache comparison](docs/cache-impact-20261024.md) completed five alternating timed pairs through the real application. Repeating three synthetic image questions took **0.453 seconds median with cached answers versus 47.094 seconds uncached**, avoiding all three inferences and model-process startup while preserving cached predictions, scores, and provenance. These are developer-host workflow measurements, not a model-inference speedup or general accuracy result.
 
 The [ScienceQA held-out test results](docs/benchmark-results-20261022.md) retain five uncached CPU repeats on 128 fixed test questions: all 640 image evaluations completed, with 77/128 correct in each repeat. This is a narrow result for the pinned image-bearing ScienceQA subset, not a general VQA score. The [ScienceQA validation results](docs/validation-results.md) retain five uncached CPU repeats on 16 fixed validation questions: all 80 image evaluations completed, median 264.91 seconds per 16 items and model peak RSS 3.460–3.521 GiB. Original scoring was 1/16; a deterministic `Answer: C` parser correction re-scores the same saved predictions to 12/16, with the original evidence preserved. A separate eight-item native CPU profile passed, retaining operator/shape/memory evidence without changing model settings; its instrumented timings are excluded from runtime comparisons. Follow the [frozen plan](docs/benchmark-plan.md) and start with `uv run --frozen python tools/verify-trialdesk.py benchmark-smoke --ci --port 8432 --benchmark-vqa smoke`. Official ScienceQA data is CC BY-NC-SA 4.0 and stays outside Git.
@@ -75,3 +84,129 @@ This new implementation follows the canonical question/context/images/choices/an
 The repository preserves full Trialdesk history at `2069fef66bd874d7f1b69e29dde9d728aae419af`, the complete Microsoft Data Formulator ancestor at `5477f0e236426dc8f74a498ec400414fba7fbc0f`, the MIT license, Microsoft notices and both prior READMEs. Visual structure follows the inspected [Hugging Face dataset viewer](https://huggingface.co/datasets/merve/vqav2-small/viewer/default/validation); source and required adaptations are recorded in [.agents/design-reference.md](.agents/design-reference.md). No Hugging Face branding or source code is copied.
 
 Inherited Python publish, desktop release and Trialdesk workflows are preserved byte for byte in inactive [.github/upstream-workflows/](.github/upstream-workflows/). Only the read-only VQA verification workflow remains active; no publication or release workflow is enabled for this extension.
+
+## Architecture and execution guide
+
+This repository preserves the complete Trialdesk and Microsoft Data Formulator applications. The VQA extension adds annotation, immutable split versions, local image inference, scoring, caches, comparisons, and export. It uses inherited workspace and identity services and an optional separately provisioned SmolVLM runtime; it does not replace inherited charting or agents. A [manifest](#manifest) pins the evaluation input.
+
+The UI calls the local application API. The backend owns VQA records and run lifecycle; inference runs in a bounded child process with explicitly configured model files.
+
+```mermaid
+flowchart LR
+  User["Annotate and start evaluation"] --> UI["VQA studio"]
+  UI --> API["Local application routes"]
+  API --> Workspace["Inherited identity and workspace manager"]
+  API --> Store["VQA service and SQLite records"]
+  Store --> Runner["Bounded local model process"]
+  Runner --> Model["Pinned offline SmolVLM files"]
+  Runner --> Results["Predictions and run records"]
+  UI --> Compare["Experiments and leaderboard"]
+  Compare --> Store
+  Store --> Export["Version and run JSON export"]
+```
+
+Workspace selection gates access. The service validates uploads and frozen versions, then records predictions and final state. The [answer cache](#answer-cache) and [score cache](#score-cache) have separate provenance; [offline inference](#offline-inference) reads configured local files. Partial or failed evaluations remain visible, as do outputs marked [manual_required](#manual-required), but these cannot enter the leaderboard. Each run points to an [immutable version](#immutable-version).
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant V as VQA studio
+  participant A as Application routes
+  participant S as VQA service and store
+  participant P as Offline model process
+  U->>V: Save image, question, mode, and gold
+  V->>A: Annotation request for workspace
+  A->>S: Validate and store bounded RGB image
+  U->>V: Freeze selected split
+  V->>A: Create immutable version
+  A->>S: Record manifest and checksums
+  U->>V: Start evaluation
+  V->>A: Run version with selected model
+  A->>S: Create run and check answer cache
+  alt Cache miss and valid model
+    S->>P: Start bounded offline inference
+    P-->>S: Prediction or process error
+  else Missing or invalid model
+    S-->>V: Visible failed run, no mock result
+  end
+  S->>S: Score mechanically and preserve terminal state
+  V->>A: Compare matching manifest and scorer
+```
+
+| Subsystem | Responsibility and owned state | Source |
+|---|---|---|
+| VQA screen | Annotation, split selection, run state, leaderboard, export actions | [`VqaStudio.tsx`](src/views/VqaStudio.tsx) |
+| Routes and validation | Workspace access, request bounds, image and run input validation | [`vqa.py`](py-src/data_formulator/routes/vqa.py) |
+| Dataset and version store | Annotation revisions and immutable split snapshots | [`vqa.py`](py-src/data_formulator/vqa.py), [`backend tests`](tests/backend/test_vqa.py) |
+| Model process | Offline inference and bounded child lifecycle | [`vqa_runner.py`](py-src/data_formulator/vqa_runner.py), [`vqa_execution.py`](py-src/data_formulator/vqa_execution.py) |
+| Evaluation and caches | Prediction, mechanical score, cache provenance, rank eligibility | [`VQA test suite`](tests/backend/test_vqa.py) |
+
+### Evaluation journey
+
+1. Select an owned local workspace and add a PNG or JPEG, question, answer mode, and gold answer.
+2. Freeze a split. Its manifest pins annotation revisions; later edits create a different [immutable version](#immutable-version).
+3. Start a run. On an answer-cache miss, the service starts the configured offline model process; it never downloads weights or uses a mock fallback.
+4. The service records predictions and mechanical scores. Manual answers remain `manual_required` and are not leaderboard-rankable.
+5. Compare only runs with matching manifest and scorer, or export the run. Cancellation and process failures preserve partial results and terminal state.
+
+### Design decisions and tradeoffs
+
+These rationales are inferred from the implementation.
+
+| Choice | Practical reason | Alternative and cost to reconsider |
+|---|---|---|
+| Freeze datasets into immutable manifests | A run identifies the exact annotation revisions it evaluated | Evaluate mutable rows, so later edits change the apparent inputs |
+| Keep answer and score caches separate | Gold changes can rescore without repeating inference | Combine caches, coupling scoring changes to inference |
+| Use a local offline model process | Images and weights stay in the local workflow with bounded child lifecycle | Hosted inference adds network, credentials, and external data handling |
+| Require mechanical scores for ranking | Manual judgments and partial runs cannot look numerically comparable | Rank subjective or partial outputs, weakening comparison meaning |
+| Reuse inherited workspaces and identity | Existing access behavior remains the workspace boundary | Build a separate app and duplicate those systems |
+
+### Glossary
+
+<a id="immutable-version"></a>
+
+<details><summary>What is an immutable version?</summary>
+
+It records a fixed set of annotation revisions. Runs point to that snapshot even when the workspace changes later.
+
+</details>
+
+<a id="manifest"></a>
+
+<details><summary>What is a manifest?</summary>
+
+A manifest lists frozen evaluation items and content hashes. This project uses SHA-256 to identify the exact split of a run.
+
+</details>
+
+<a id="answer-cache"></a>
+
+<details><summary>What is the answer cache?</summary>
+
+It reuses a prediction when image, prompt inputs, model revision, and generation settings match. Gold is excluded, so changing gold does not require inference.
+
+</details>
+
+<a id="score-cache"></a>
+
+<details><summary>What is the score cache?</summary>
+
+It stores mechanical scoring separately from generated answers. A gold or scorer revision can change the score while retaining the prediction.
+
+</details>
+
+<a id="manual-required"></a>
+
+<details><summary>What does manual_required mean?</summary>
+
+It marks an answer with no configured objective scoring rule. It remains visible, but the run cannot be ranked.
+
+</details>
+
+<a id="offline-inference"></a>
+
+<details><summary>What is offline inference?</summary>
+
+It uses files already present and blocks remote model loading. Missing or invalid files produce failure rather than a download or invented output.
+
+</details>
