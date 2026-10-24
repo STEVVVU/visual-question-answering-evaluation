@@ -1,0 +1,3087 @@
+{
+  "run": "cache-impact-20261024-d",
+  "base": "http://127.0.0.1:8432",
+  "actions": [
+    {
+      "action": "doctor",
+      "isolated_home": true
+    },
+    {
+      "action": "launch",
+      "pid": 66492
+    }
+  ],
+  "cache_impact_benchmark": {
+    "schema": 1,
+    "passed": true,
+    "mode": "real-model-cache-impact",
+    "pairs": [
+      {
+        "pair": 1,
+        "questions": [
+          "What color is the square?",
+          "Which shape is shown?",
+          "What color is the background?"
+        ],
+        "arms": {
+          "cold": {
+            "workspace": "cache-cold-1",
+            "timed": true,
+            "run": "b85628fadbd84037b3f486cf995a3227",
+            "status": "completed",
+            "cache_hits": 0,
+            "inference_items": 3,
+            "vision_forwards": 3,
+            "generation_seconds": [
+              14.60008370000287,
+              12.498512799997116,
+              11.404237499998999
+            ],
+            "item_seconds": [
+              14.90841730000102,
+              12.79797710001003,
+              11.673848699996597
+            ],
+            "request_seconds": 0.01600000000325963,
+            "terminal_seconds": 44.78100000000268,
+            "terminal_observation_seconds_after_admission": 44.76499999999942,
+            "export": "cache-impact-cold-1-b85628fadbd84037b3f486cf995a3227.json",
+            "export_sha256": "371c68d51c7fb62db139840e334e544ee992973fb44d5e6b409d1f96f9025c48",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          },
+          "cached": {
+            "workspace": "cache-warm-1",
+            "timed": true,
+            "run": "02725363dce64449917567f5ea2ef083",
+            "status": "completed",
+            "cache_hits": 3,
+            "inference_items": 0,
+            "vision_forwards": 0,
+            "generation_seconds": [],
+            "item_seconds": [],
+            "request_seconds": 0.015999999988707714,
+            "terminal_seconds": 0.4529999999940628,
+            "terminal_observation_seconds_after_admission": 0.4370000000053551,
+            "export": "cache-impact-cached-1-02725363dce64449917567f5ea2ef083.json",
+            "export_sha256": "d3d5b6981e7f40b9b4a30cdc45edc304b7d5033f2a167af14519b23c34fb0705",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          }
+        },
+        "prepopulation": {
+          "workspace": "cache-warm-1",
+          "timed": false,
+          "run": "6c6de97404bc47018b2a09c15e8046a5",
+          "status": "completed",
+          "cache_hits": 0,
+          "inference_items": 3,
+          "vision_forwards": 3,
+          "generation_seconds": [
+            12.183155000006082,
+            11.602929500004393,
+            11.3902306999953
+          ],
+          "item_seconds": [
+            12.515298699989216,
+            11.925275300003705,
+            11.715978799998993
+          ],
+          "request_seconds": 0.014999999999417923,
+          "terminal_seconds": 41.57799999999406,
+          "terminal_observation_seconds_after_admission": 41.562999999994645,
+          "export": "cache-impact-prime-1-6c6de97404bc47018b2a09c15e8046a5.json",
+          "export_sha256": "06c36f83d702f80ebdef21daa65f0ab57a37a85224e93cf40a743a0d3cf748c8",
+          "input_parity": {
+            "version": {
+              "schema": "vqa-manifest-v1",
+              "split": "validation",
+              "items": [
+                {
+                  "aliases": [],
+                  "answer": "red",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "red",
+                    "blue"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the square?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "square",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "square",
+                    "circle"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "Which shape is shown?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "white",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "white",
+                    "black"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the background?",
+                  "revision": 1,
+                  "split": "validation"
+                }
+              ]
+            },
+            "model": {
+              "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+              "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+              "generation": {
+                "do_sample": false,
+                "max_new_tokens": 32
+              },
+              "prompt_version": "image-question-choices-v1",
+              "scorer": "mode-exact-v3",
+              "model_manifest": {
+                "files": [
+                  {
+                    "bytes": 16400,
+                    "name": "README.md",
+                    "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                  },
+                  {
+                    "bytes": 4739,
+                    "name": "added_tokens.json",
+                    "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                  },
+                  {
+                    "bytes": 429,
+                    "name": "chat_template.json",
+                    "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                  },
+                  {
+                    "bytes": 7353,
+                    "name": "config.json",
+                    "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                  },
+                  {
+                    "bytes": 136,
+                    "name": "generation_config.json",
+                    "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                  },
+                  {
+                    "bytes": 466391,
+                    "name": "merges.txt",
+                    "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                  },
+                  {
+                    "bytes": 513028808,
+                    "name": "model.safetensors",
+                    "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                  },
+                  {
+                    "bytes": 486,
+                    "name": "preprocessor_config.json",
+                    "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                  },
+                  {
+                    "bytes": 68,
+                    "name": "processor_config.json",
+                    "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                  },
+                  {
+                    "bytes": 1069,
+                    "name": "special_tokens_map.json",
+                    "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                  },
+                  {
+                    "bytes": 3548256,
+                    "name": "tokenizer.json",
+                    "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                  },
+                  {
+                    "bytes": 28249,
+                    "name": "tokenizer_config.json",
+                    "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                  },
+                  {
+                    "bytes": 800662,
+                    "name": "vocab.json",
+                    "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                  }
+                ],
+                "license": "Apache-2.0",
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+              },
+              "device": "cpu"
+            }
+          },
+          "predictions": {
+            "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+              "prediction": " White.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+              "prediction": " A. red.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+              "prediction": " A. square.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            }
+          },
+          "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+        },
+        "timed_order": [
+          "cold",
+          "cached"
+        ],
+        "independent_generation_agreement": {
+          "items": 3,
+          "prediction_matches": 3,
+          "score_matches": 3
+        }
+      },
+      {
+        "pair": 2,
+        "questions": [
+          "What color is the square?",
+          "Which shape is shown?",
+          "What color is the background?"
+        ],
+        "arms": {
+          "cached": {
+            "workspace": "cache-warm-2",
+            "timed": true,
+            "run": "0ad089aa41d5467d8f93d115613b45d5",
+            "status": "completed",
+            "cache_hits": 3,
+            "inference_items": 0,
+            "vision_forwards": 0,
+            "generation_seconds": [],
+            "item_seconds": [],
+            "request_seconds": 0.031000000002677552,
+            "terminal_seconds": 0.25,
+            "terminal_observation_seconds_after_admission": 0.21899999999732245,
+            "export": "cache-impact-cached-2-0ad089aa41d5467d8f93d115613b45d5.json",
+            "export_sha256": "3952084bbf11d8572973368d55fc204150e0be526fc6ee33adef0819739b5b0d",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          },
+          "cold": {
+            "workspace": "cache-cold-2",
+            "timed": true,
+            "run": "dd880dd6fee74b278f06264552010afc",
+            "status": "completed",
+            "cache_hits": 0,
+            "inference_items": 3,
+            "vision_forwards": 3,
+            "generation_seconds": [
+              11.64520800000173,
+              10.679219500001636,
+              11.02808110001206
+            ],
+            "item_seconds": [
+              11.90958479999972,
+              10.937381799987634,
+              11.282816400009324
+            ],
+            "request_seconds": 0.01600000000325963,
+            "terminal_seconds": 39.203999999997905,
+            "terminal_observation_seconds_after_admission": 39.187999999994645,
+            "export": "cache-impact-cold-2-dd880dd6fee74b278f06264552010afc.json",
+            "export_sha256": "b212265bbce6e0b2b06b1098ba3b09b6fac3e7bc12d5abeeceec86724c3da5c2",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          }
+        },
+        "prepopulation": {
+          "workspace": "cache-warm-2",
+          "timed": false,
+          "run": "d3c6f31cdfa841a981156083d433e6e7",
+          "status": "completed",
+          "cache_hits": 0,
+          "inference_items": 3,
+          "vision_forwards": 3,
+          "generation_seconds": [
+            12.066602099992451,
+            12.462923500002944,
+            11.257584300008602
+          ],
+          "item_seconds": [
+            12.343886400005431,
+            12.721885999999358,
+            11.613273399998434
+          ],
+          "request_seconds": 0.01600000000325963,
+          "terminal_seconds": 42.25,
+          "terminal_observation_seconds_after_admission": 42.23399999999674,
+          "export": "cache-impact-prime-2-d3c6f31cdfa841a981156083d433e6e7.json",
+          "export_sha256": "e1c3e5eed5f68f6d689f8aeb2b4b72f22f6ca5f730cc64314d98563b9a396f56",
+          "input_parity": {
+            "version": {
+              "schema": "vqa-manifest-v1",
+              "split": "validation",
+              "items": [
+                {
+                  "aliases": [],
+                  "answer": "red",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "red",
+                    "blue"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the square?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "square",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "square",
+                    "circle"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "Which shape is shown?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "white",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "white",
+                    "black"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the background?",
+                  "revision": 1,
+                  "split": "validation"
+                }
+              ]
+            },
+            "model": {
+              "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+              "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+              "generation": {
+                "do_sample": false,
+                "max_new_tokens": 32
+              },
+              "prompt_version": "image-question-choices-v1",
+              "scorer": "mode-exact-v3",
+              "model_manifest": {
+                "files": [
+                  {
+                    "bytes": 16400,
+                    "name": "README.md",
+                    "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                  },
+                  {
+                    "bytes": 4739,
+                    "name": "added_tokens.json",
+                    "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                  },
+                  {
+                    "bytes": 429,
+                    "name": "chat_template.json",
+                    "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                  },
+                  {
+                    "bytes": 7353,
+                    "name": "config.json",
+                    "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                  },
+                  {
+                    "bytes": 136,
+                    "name": "generation_config.json",
+                    "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                  },
+                  {
+                    "bytes": 466391,
+                    "name": "merges.txt",
+                    "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                  },
+                  {
+                    "bytes": 513028808,
+                    "name": "model.safetensors",
+                    "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                  },
+                  {
+                    "bytes": 486,
+                    "name": "preprocessor_config.json",
+                    "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                  },
+                  {
+                    "bytes": 68,
+                    "name": "processor_config.json",
+                    "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                  },
+                  {
+                    "bytes": 1069,
+                    "name": "special_tokens_map.json",
+                    "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                  },
+                  {
+                    "bytes": 3548256,
+                    "name": "tokenizer.json",
+                    "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                  },
+                  {
+                    "bytes": 28249,
+                    "name": "tokenizer_config.json",
+                    "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                  },
+                  {
+                    "bytes": 800662,
+                    "name": "vocab.json",
+                    "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                  }
+                ],
+                "license": "Apache-2.0",
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+              },
+              "device": "cpu"
+            }
+          },
+          "predictions": {
+            "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+              "prediction": " White.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+              "prediction": " A. square.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+              "prediction": " A. red.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            }
+          },
+          "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+        },
+        "timed_order": [
+          "cached",
+          "cold"
+        ],
+        "independent_generation_agreement": {
+          "items": 3,
+          "prediction_matches": 3,
+          "score_matches": 3
+        }
+      },
+      {
+        "pair": 3,
+        "questions": [
+          "What color is the square?",
+          "Which shape is shown?",
+          "What color is the background?"
+        ],
+        "arms": {
+          "cold": {
+            "workspace": "cache-cold-3",
+            "timed": true,
+            "run": "6df99e72677b4188933295bb8aeeed4d",
+            "status": "completed",
+            "cache_hits": 0,
+            "inference_items": 3,
+            "vision_forwards": 3,
+            "generation_seconds": [
+              14.351592399994843,
+              13.305916000012076,
+              12.564275600001565
+            ],
+            "item_seconds": [
+              14.640537400002358,
+              13.698402999987593,
+              12.846208200004185
+            ],
+            "request_seconds": 0.03200000000651926,
+            "terminal_seconds": 47.094000000011874,
+            "terminal_observation_seconds_after_admission": 47.062000000005355,
+            "export": "cache-impact-cold-3-6df99e72677b4188933295bb8aeeed4d.json",
+            "export_sha256": "1d75e034a04e16c1db5ca97442ecaa1728decdc9cc97518544a49e98cea0e070",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          },
+          "cached": {
+            "workspace": "cache-warm-3",
+            "timed": true,
+            "run": "aca87b5c70ac458b9965f8776a1daf12",
+            "status": "completed",
+            "cache_hits": 3,
+            "inference_items": 0,
+            "vision_forwards": 0,
+            "generation_seconds": [],
+            "item_seconds": [],
+            "request_seconds": 0.014999999999417923,
+            "terminal_seconds": 0.4840000000112923,
+            "terminal_observation_seconds_after_admission": 0.46900000001187436,
+            "export": "cache-impact-cached-3-aca87b5c70ac458b9965f8776a1daf12.json",
+            "export_sha256": "fde95d48eb6b07dcba7e20d8b7bd474790c2b1df58dc8e7b7b69b9790edfe944",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          }
+        },
+        "prepopulation": {
+          "workspace": "cache-warm-3",
+          "timed": false,
+          "run": "5762f7e3cef14bbb8a506e06122d02d4",
+          "status": "completed",
+          "cache_hits": 0,
+          "inference_items": 3,
+          "vision_forwards": 3,
+          "generation_seconds": [
+            13.004128100001253,
+            13.662644299998647,
+            13.652791800006526
+          ],
+          "item_seconds": [
+            13.295827399997506,
+            14.027524600009201,
+            13.969525199994678
+          ],
+          "request_seconds": 0.01600000000325963,
+          "terminal_seconds": 47.21899999999732,
+          "terminal_observation_seconds_after_admission": 47.20299999999406,
+          "export": "cache-impact-prime-3-5762f7e3cef14bbb8a506e06122d02d4.json",
+          "export_sha256": "f1648e0f6e89a8f1818fcd02ed5b29532aa73c5f7211efe53ae97f9f99b00b09",
+          "input_parity": {
+            "version": {
+              "schema": "vqa-manifest-v1",
+              "split": "validation",
+              "items": [
+                {
+                  "aliases": [],
+                  "answer": "red",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "red",
+                    "blue"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the square?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "square",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "square",
+                    "circle"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "Which shape is shown?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "white",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "white",
+                    "black"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the background?",
+                  "revision": 1,
+                  "split": "validation"
+                }
+              ]
+            },
+            "model": {
+              "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+              "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+              "generation": {
+                "do_sample": false,
+                "max_new_tokens": 32
+              },
+              "prompt_version": "image-question-choices-v1",
+              "scorer": "mode-exact-v3",
+              "model_manifest": {
+                "files": [
+                  {
+                    "bytes": 16400,
+                    "name": "README.md",
+                    "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                  },
+                  {
+                    "bytes": 4739,
+                    "name": "added_tokens.json",
+                    "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                  },
+                  {
+                    "bytes": 429,
+                    "name": "chat_template.json",
+                    "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                  },
+                  {
+                    "bytes": 7353,
+                    "name": "config.json",
+                    "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                  },
+                  {
+                    "bytes": 136,
+                    "name": "generation_config.json",
+                    "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                  },
+                  {
+                    "bytes": 466391,
+                    "name": "merges.txt",
+                    "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                  },
+                  {
+                    "bytes": 513028808,
+                    "name": "model.safetensors",
+                    "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                  },
+                  {
+                    "bytes": 486,
+                    "name": "preprocessor_config.json",
+                    "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                  },
+                  {
+                    "bytes": 68,
+                    "name": "processor_config.json",
+                    "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                  },
+                  {
+                    "bytes": 1069,
+                    "name": "special_tokens_map.json",
+                    "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                  },
+                  {
+                    "bytes": 3548256,
+                    "name": "tokenizer.json",
+                    "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                  },
+                  {
+                    "bytes": 28249,
+                    "name": "tokenizer_config.json",
+                    "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                  },
+                  {
+                    "bytes": 800662,
+                    "name": "vocab.json",
+                    "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                  }
+                ],
+                "license": "Apache-2.0",
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+              },
+              "device": "cpu"
+            }
+          },
+          "predictions": {
+            "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+              "prediction": " A. red.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+              "prediction": " A. square.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+              "prediction": " White.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            }
+          },
+          "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+        },
+        "timed_order": [
+          "cold",
+          "cached"
+        ],
+        "independent_generation_agreement": {
+          "items": 3,
+          "prediction_matches": 3,
+          "score_matches": 3
+        }
+      },
+      {
+        "pair": 4,
+        "questions": [
+          "What color is the square?",
+          "Which shape is shown?",
+          "What color is the background?"
+        ],
+        "arms": {
+          "cached": {
+            "workspace": "cache-warm-4",
+            "timed": true,
+            "run": "afeeb5f3cd7a4ce19b3d04d986ecdfb4",
+            "status": "completed",
+            "cache_hits": 3,
+            "inference_items": 0,
+            "vision_forwards": 0,
+            "generation_seconds": [],
+            "item_seconds": [],
+            "request_seconds": 0.014999999999417923,
+            "terminal_seconds": 0.48399999999674037,
+            "terminal_observation_seconds_after_admission": 0.46899999999732245,
+            "export": "cache-impact-cached-4-afeeb5f3cd7a4ce19b3d04d986ecdfb4.json",
+            "export_sha256": "9cbced460f794821016567b62721886f424a5a82574c674659d96edf33710513",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          },
+          "cold": {
+            "workspace": "cache-cold-4",
+            "timed": true,
+            "run": "e70e919a383c4a28b2e22842ad33c9f6",
+            "status": "completed",
+            "cache_hits": 0,
+            "inference_items": 3,
+            "vision_forwards": 3,
+            "generation_seconds": [
+              15.38432520000788,
+              14.242279199999757,
+              14.123319799997262
+            ],
+            "item_seconds": [
+              15.66497939999681,
+              14.470247300007031,
+              14.35635679999541
+            ],
+            "request_seconds": 0.014999999999417923,
+            "terminal_seconds": 50.96899999999732,
+            "terminal_observation_seconds_after_admission": 50.953999999997905,
+            "export": "cache-impact-cold-4-e70e919a383c4a28b2e22842ad33c9f6.json",
+            "export_sha256": "2afec8600e958d261a8c3f2bfdd7a242fc934098d97829702e58d5a2e58808b2",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          }
+        },
+        "prepopulation": {
+          "workspace": "cache-warm-4",
+          "timed": false,
+          "run": "e6b76612e2474afcaaa82f380ad57fa4",
+          "status": "completed",
+          "cache_hits": 0,
+          "inference_items": 3,
+          "vision_forwards": 3,
+          "generation_seconds": [
+            16.486848000000464,
+            14.953371299998253,
+            15.0053079000063
+          ],
+          "item_seconds": [
+            16.773396499993396,
+            15.268877700000303,
+            15.24913579999702
+          ],
+          "request_seconds": 0.01600000000325963,
+          "terminal_seconds": 55.453999999997905,
+          "terminal_observation_seconds_after_admission": 55.437999999994645,
+          "export": "cache-impact-prime-4-e6b76612e2474afcaaa82f380ad57fa4.json",
+          "export_sha256": "96bc1b3511cb75e0809fa1c0ef9fa3312a4d393ef9830fc42fb2d74305789e54",
+          "input_parity": {
+            "version": {
+              "schema": "vqa-manifest-v1",
+              "split": "validation",
+              "items": [
+                {
+                  "aliases": [],
+                  "answer": "red",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "red",
+                    "blue"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the square?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "square",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "square",
+                    "circle"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "Which shape is shown?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "white",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "white",
+                    "black"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the background?",
+                  "revision": 1,
+                  "split": "validation"
+                }
+              ]
+            },
+            "model": {
+              "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+              "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+              "generation": {
+                "do_sample": false,
+                "max_new_tokens": 32
+              },
+              "prompt_version": "image-question-choices-v1",
+              "scorer": "mode-exact-v3",
+              "model_manifest": {
+                "files": [
+                  {
+                    "bytes": 16400,
+                    "name": "README.md",
+                    "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                  },
+                  {
+                    "bytes": 4739,
+                    "name": "added_tokens.json",
+                    "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                  },
+                  {
+                    "bytes": 429,
+                    "name": "chat_template.json",
+                    "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                  },
+                  {
+                    "bytes": 7353,
+                    "name": "config.json",
+                    "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                  },
+                  {
+                    "bytes": 136,
+                    "name": "generation_config.json",
+                    "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                  },
+                  {
+                    "bytes": 466391,
+                    "name": "merges.txt",
+                    "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                  },
+                  {
+                    "bytes": 513028808,
+                    "name": "model.safetensors",
+                    "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                  },
+                  {
+                    "bytes": 486,
+                    "name": "preprocessor_config.json",
+                    "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                  },
+                  {
+                    "bytes": 68,
+                    "name": "processor_config.json",
+                    "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                  },
+                  {
+                    "bytes": 1069,
+                    "name": "special_tokens_map.json",
+                    "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                  },
+                  {
+                    "bytes": 3548256,
+                    "name": "tokenizer.json",
+                    "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                  },
+                  {
+                    "bytes": 28249,
+                    "name": "tokenizer_config.json",
+                    "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                  },
+                  {
+                    "bytes": 800662,
+                    "name": "vocab.json",
+                    "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                  }
+                ],
+                "license": "Apache-2.0",
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+              },
+              "device": "cpu"
+            }
+          },
+          "predictions": {
+            "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+              "prediction": " White.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+              "prediction": " A. square.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+              "prediction": " A. red.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            }
+          },
+          "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+        },
+        "timed_order": [
+          "cached",
+          "cold"
+        ],
+        "independent_generation_agreement": {
+          "items": 3,
+          "prediction_matches": 3,
+          "score_matches": 3
+        }
+      },
+      {
+        "pair": 5,
+        "questions": [
+          "What color is the square?",
+          "Which shape is shown?",
+          "What color is the background?"
+        ],
+        "arms": {
+          "cold": {
+            "workspace": "cache-cold-5",
+            "timed": true,
+            "run": "0ab2fd8e94b74b90b0e89fb52c308671",
+            "status": "completed",
+            "cache_hits": 0,
+            "inference_items": 3,
+            "vision_forwards": 3,
+            "generation_seconds": [
+              14.191670999993221,
+              13.94141440000385,
+              13.645521099999314
+            ],
+            "item_seconds": [
+              14.429622900002869,
+              14.149501300009433,
+              13.86036079999758
+            ],
+            "request_seconds": 0.031000000002677552,
+            "terminal_seconds": 48.01499999999942,
+            "terminal_observation_seconds_after_admission": 47.98399999999674,
+            "export": "cache-impact-cold-5-0ab2fd8e94b74b90b0e89fb52c308671.json",
+            "export_sha256": "1120db93109f2425352734dc5546689de27c38ee3e1ef9b289e13335f21ead37",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          },
+          "cached": {
+            "workspace": "cache-warm-5",
+            "timed": true,
+            "run": "36d7ad62222746a9aaec6dbbded01cd7",
+            "status": "completed",
+            "cache_hits": 3,
+            "inference_items": 0,
+            "vision_forwards": 0,
+            "generation_seconds": [],
+            "item_seconds": [],
+            "request_seconds": 0.014999999999417923,
+            "terminal_seconds": 0.4529999999940628,
+            "terminal_observation_seconds_after_admission": 0.4379999999946449,
+            "export": "cache-impact-cached-5-36d7ad62222746a9aaec6dbbded01cd7.json",
+            "export_sha256": "05fae10e8571a7eb5470fddc385c7da7c3792724a5a2fae75bc3384c3307f4a0",
+            "input_parity": {
+              "version": {
+                "schema": "vqa-manifest-v1",
+                "split": "validation",
+                "items": [
+                  {
+                    "aliases": [],
+                    "answer": "red",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "red",
+                      "blue"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the square?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "square",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "square",
+                      "circle"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "Which shape is shown?",
+                    "revision": 1,
+                    "split": "validation"
+                  },
+                  {
+                    "aliases": [],
+                    "answer": "white",
+                    "answer_label": 0,
+                    "answer_mode": "mcq",
+                    "choices": [
+                      "white",
+                      "black"
+                    ],
+                    "context": "",
+                    "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                    "question": "What color is the background?",
+                    "revision": 1,
+                    "split": "validation"
+                  }
+                ]
+              },
+              "model": {
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+                "generation": {
+                  "do_sample": false,
+                  "max_new_tokens": 32
+                },
+                "prompt_version": "image-question-choices-v1",
+                "scorer": "mode-exact-v3",
+                "model_manifest": {
+                  "files": [
+                    {
+                      "bytes": 16400,
+                      "name": "README.md",
+                      "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                    },
+                    {
+                      "bytes": 4739,
+                      "name": "added_tokens.json",
+                      "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                    },
+                    {
+                      "bytes": 429,
+                      "name": "chat_template.json",
+                      "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                    },
+                    {
+                      "bytes": 7353,
+                      "name": "config.json",
+                      "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                    },
+                    {
+                      "bytes": 136,
+                      "name": "generation_config.json",
+                      "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                    },
+                    {
+                      "bytes": 466391,
+                      "name": "merges.txt",
+                      "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                    },
+                    {
+                      "bytes": 513028808,
+                      "name": "model.safetensors",
+                      "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                    },
+                    {
+                      "bytes": 486,
+                      "name": "preprocessor_config.json",
+                      "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                    },
+                    {
+                      "bytes": 68,
+                      "name": "processor_config.json",
+                      "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                    },
+                    {
+                      "bytes": 1069,
+                      "name": "special_tokens_map.json",
+                      "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                    },
+                    {
+                      "bytes": 3548256,
+                      "name": "tokenizer.json",
+                      "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                    },
+                    {
+                      "bytes": 28249,
+                      "name": "tokenizer_config.json",
+                      "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                    },
+                    {
+                      "bytes": 800662,
+                      "name": "vocab.json",
+                      "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                      "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                    }
+                  ],
+                  "license": "Apache-2.0",
+                  "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                  "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+                },
+                "device": "cpu"
+              }
+            },
+            "predictions": {
+              "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+                "prediction": " White.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+                "prediction": " A. red.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              },
+              "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+                "prediction": " A. square.",
+                "score": {
+                  "correct": true,
+                  "status": "scored"
+                }
+              }
+            },
+            "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+          }
+        },
+        "prepopulation": {
+          "workspace": "cache-warm-5",
+          "timed": false,
+          "run": "c9acaab46bfe4cf2acdc042ff8f69bd0",
+          "status": "completed",
+          "cache_hits": 0,
+          "inference_items": 3,
+          "vision_forwards": 3,
+          "generation_seconds": [
+            14.39490189999924,
+            13.931911200008471,
+            14.698871400003554
+          ],
+          "item_seconds": [
+            14.613058200004161,
+            14.224850800004788,
+            14.933818699995754
+          ],
+          "request_seconds": 0.01600000000325963,
+          "terminal_seconds": 49.25,
+          "terminal_observation_seconds_after_admission": 49.23399999999674,
+          "export": "cache-impact-prime-5-c9acaab46bfe4cf2acdc042ff8f69bd0.json",
+          "export_sha256": "330e498127332e802652c05afab0dec819457da4d168ea13348057dc8b2ec5df",
+          "input_parity": {
+            "version": {
+              "schema": "vqa-manifest-v1",
+              "split": "validation",
+              "items": [
+                {
+                  "aliases": [],
+                  "answer": "red",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "red",
+                    "blue"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the square?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "square",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "square",
+                    "circle"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "Which shape is shown?",
+                  "revision": 1,
+                  "split": "validation"
+                },
+                {
+                  "aliases": [],
+                  "answer": "white",
+                  "answer_label": 0,
+                  "answer_mode": "mcq",
+                  "choices": [
+                    "white",
+                    "black"
+                  ],
+                  "context": "",
+                  "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+                  "question": "What color is the background?",
+                  "revision": 1,
+                  "split": "validation"
+                }
+              ]
+            },
+            "model": {
+              "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+              "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+              "generation": {
+                "do_sample": false,
+                "max_new_tokens": 32
+              },
+              "prompt_version": "image-question-choices-v1",
+              "scorer": "mode-exact-v3",
+              "model_manifest": {
+                "files": [
+                  {
+                    "bytes": 16400,
+                    "name": "README.md",
+                    "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+                  },
+                  {
+                    "bytes": 4739,
+                    "name": "added_tokens.json",
+                    "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+                  },
+                  {
+                    "bytes": 429,
+                    "name": "chat_template.json",
+                    "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+                  },
+                  {
+                    "bytes": 7353,
+                    "name": "config.json",
+                    "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+                  },
+                  {
+                    "bytes": 136,
+                    "name": "generation_config.json",
+                    "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+                  },
+                  {
+                    "bytes": 466391,
+                    "name": "merges.txt",
+                    "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+                  },
+                  {
+                    "bytes": 513028808,
+                    "name": "model.safetensors",
+                    "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+                  },
+                  {
+                    "bytes": 486,
+                    "name": "preprocessor_config.json",
+                    "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+                  },
+                  {
+                    "bytes": 68,
+                    "name": "processor_config.json",
+                    "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+                  },
+                  {
+                    "bytes": 1069,
+                    "name": "special_tokens_map.json",
+                    "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+                  },
+                  {
+                    "bytes": 3548256,
+                    "name": "tokenizer.json",
+                    "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+                  },
+                  {
+                    "bytes": 28249,
+                    "name": "tokenizer_config.json",
+                    "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+                  },
+                  {
+                    "bytes": 800662,
+                    "name": "vocab.json",
+                    "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+                    "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+                  }
+                ],
+                "license": "Apache-2.0",
+                "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+                "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+              },
+              "device": "cpu"
+            }
+          },
+          "predictions": {
+            "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7": {
+              "prediction": " White.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36": {
+              "prediction": " A. red.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            },
+            "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01": {
+              "prediction": " A. square.",
+              "score": {
+                "correct": true,
+                "status": "scored"
+              }
+            }
+          },
+          "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c"
+        },
+        "timed_order": [
+          "cold",
+          "cached"
+        ],
+        "independent_generation_agreement": {
+          "items": 3,
+          "prediction_matches": 3,
+          "score_matches": 3
+        }
+      }
+    ],
+    "environment": {
+      "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "cpu_count": 24,
+      "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+      "command": [
+        "tools/verify-trialdesk.py",
+        "cache-impact-20261024-d",
+        "--ci",
+        "--port",
+        "8432",
+        "--benchmark-vqa",
+        "cache-impact"
+      ]
+    },
+    "source": "85eac7a03e133e07a0e4887f3659646bf4300cda",
+    "dirty": " M .agents/skills/verify-vqa/SKILL.md\n M tools/benchmark-vqa-journey.py\n M tools/test-vqa-benchmark.py\n M tools/verify-trialdesk.py\n",
+    "source_files_sha256": {
+      "benchmark-vqa-journey.py": "0d5fc12769720a42d910db9a12c6e321141e00eb55a1b6b6cfd9ddbf4d4fd3d9",
+      "verify-trialdesk.py": "d71aa5c0cab8ab3f3cf1e99615fd7ba3f1e8994f29e21a341539ced1731c828a"
+    },
+    "timing": {
+      "endpoint_request": "POST /api/vqa/runs admission call only",
+      "terminal": "admission call through first terminal state poll",
+      "poll_interval_seconds": 0.2
+    },
+    "cache_policy": "Each pair prepopulates a separate warm workspace before timed arms. Cold and cached arms use distinct otherwise-identical workspaces. Timed arm order alternates; the cold arm still starts with an empty workspace cache. Cold and prepopulation runs start a new model process; a fully cached run skips model process startup. The OS file cache is not flushed, so this measures the application answer cache and includes normal host cache effects.",
+    "model_manifest_sha256": "bb3e5190a72680f3c8743822e5d79b57d867009e3efff4eb337b4226023c731c",
+    "summary": {
+      "cold_terminal_seconds": {
+        "median": 47.094000000011874,
+        "min": 39.203999999997905,
+        "max": 50.96899999999732
+      },
+      "cached_terminal_seconds": {
+        "median": 0.4529999999940628,
+        "min": 0.25,
+        "max": 0.4840000000112923
+      },
+      "cold_request_seconds": {
+        "median": 0.01600000000325963,
+        "min": 0.014999999999417923,
+        "max": 0.03200000000651926
+      },
+      "cached_request_seconds": {
+        "median": 0.014999999999417923,
+        "min": 0.014999999999417923,
+        "max": 0.031000000002677552
+      },
+      "pairs": 5
+    },
+    "elapsed_seconds": 469.4689999999973
+  },
+  "cleanup": {
+    "listenerStopped": true,
+    "retainedHome": "C:\\Users\\steve\\Projects\\visual-question-answering-evaluation\\.audit\\verification\\cache-impact-20261024-d\\home"
+  }
+}

@@ -26,6 +26,8 @@ jobs:
           python-version: '3.11'
       - run: npm install --prefix .tooling --no-save --package-lock=false yarn@1.22.22
       - run: uv sync --frozen
+      - run: uv run --frozen python tools/test-vqa-benchmark.py
+      - run: uv run --frozen python tools/check-vqa-cache-evidence.py
       - run: node .tooling/node_modules/yarn/bin/yarn.js install --frozen-lockfile
       - run: node .tooling/node_modules/yarn/bin/yarn.js test
       - run: node node_modules/typescript/bin/tsc --noEmit

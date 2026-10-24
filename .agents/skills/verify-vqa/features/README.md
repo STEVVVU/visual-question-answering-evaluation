@@ -2,6 +2,7 @@
 
 | Feature | User path | Driver proof |
 | --- | --- | --- |
+| Repeated-evaluation answer cache | `--benchmark-vqa cache-impact` through production HTTP | [Five reviewed pairs](../../../../docs/cache-impact-20261024.md), real uncached/prepopulation vision forwards, all-hit reuse, own-prime prediction/score preservation, source/model identities, and retained timing/export/cleanup receipts. `tools/check-vqa-cache-evidence.py` rechecks published evidence without inference. |
 | Held-out benchmark | Actual upload/freeze/run/export API with fresh workspaces and pinned ScienceQA image questions | Separate validation/profile/test, five uncached repeated CPU runs, vision execution, chance baseline, quality/latency/RSS/error and busy-admission accounting. Profile-only native CPU operator/shape/memory tables are capped at eight/100 rows; stubbed routing/no-gold controls precede hosted proof. Smoke proves visible no-model failure and cleanup |
 | Annotation | `/vqa` → workspace → upload PNG/question → save | Image decode limits, canonical schema and durable read |
 | Versions | Dataset → Freeze version | Immutable manifest/hash; revision creates different version |

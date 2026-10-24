@@ -9,6 +9,7 @@ from pathlib import Path
 import platform
 import random
 import shutil
+import statistics
 import subprocess
 import sys
 import time
@@ -26,6 +27,218 @@ def wilson(correct, total):
     center = (correct / total + z * z / (2 * total)) / (1 + z * z / total)
     half = z * math.sqrt(correct / total * (1 - correct / total) / total + z * z / (4 * total * total)) / (1 + z * z / total)
     return [center - half, center + half]
+
+
+def cache_manifest_parity(manifest):
+    return {
+        "schema": manifest["schema"],
+        "split": manifest["split"],
+        "items": sorted((
+            {key: value for key, value in item.items() if key != "id"}
+            for item in manifest["items"]
+        ), key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":"))),
+    }
+
+
+def cache_input_parity(exported):
+    run = exported["run"]
+    provenance = ("model", "revision", "generation", "prompt_version", "scorer", "model_manifest", "device")
+    if any(not run.get(key) for key in provenance) or not run["model_manifest"].get("files"):
+        raise ValueError("Run is missing pinned model provenance")
+    if any(not isinstance(row.get("prediction"), str) or not row.get("answer_key") or not row.get("score_key") or not isinstance(row.get("score"), dict) or not isinstance(row["score"].get("correct"), bool) for row in run["results"]):
+        raise ValueError("Run is missing a prediction or scoring result")
+    return {"version": cache_manifest_parity(exported["version"]["manifest"]),
+            "model": {key: run[key] for key in provenance}}
+
+
+def cache_predictions(exported):
+    return {
+        row["answer_key"]: {"prediction": row["prediction"], "score": row["score"]}
+        for row in exported["run"]["results"]
+    }
+
+
+def validate_cache_arm(exported, arm, expected_total):
+    from data_formulator.vqa import answer_key, digest, score
+
+    run = exported["run"]
+    results = run.get("results", [])
+    hits = sum(row.get("cache_hit") is True for row in results)
+    misses = len(results) - hits
+    if run.get("status") != "completed" or len(results) != expected_total or run.get("total") != expected_total:
+        raise ValueError(f"{arm} run did not complete every item")
+    if run.get("cache_hits") != hits:
+        raise ValueError(f"{arm} cache hit count does not match per-item records")
+    items = {item["id"]: item for item in exported["version"]["manifest"]["items"]}
+    if len(items) != expected_total or len({row.get("answer_key") for row in results}) != expected_total:
+        raise ValueError(f"{arm} run does not map one-to-one to the frozen questions")
+    model_identity = digest(run["model_manifest"])
+    for row in results:
+        item = items.get(row.get("id"))
+        if item is None or answer_key(item, model_identity) != row["answer_key"]:
+            raise ValueError(f"{arm} answer key does not match its frozen question and model")
+        expected_score_key = digest({"answer_key": row["answer_key"], "prediction": row["prediction"], "annotation": item, "scorer": run["scorer"]})
+        if row["score_key"] != expected_score_key or row["score"] != score(item, row["prediction"]):
+            raise ValueError(f"{arm} scorer result does not match its answer and annotation")
+    if arm == "cold" and (hits != 0 or misses != expected_total or any(row.get("vision_forwards", 0) < 1 for row in results)):
+        raise ValueError("Cold run must infer every item through the vision encoder")
+    if arm == "cached" and (hits != expected_total or misses != 0):
+        raise ValueError("Cached run must reuse every answer")
+    return {"input": cache_input_parity(exported), "predictions": cache_predictions(exported)}
+
+
+def cache_setup(api, workspace, base, questions):
+    api("/api/sessions/create", {"id": workspace})
+    for question in questions:
+        api("/api/vqa/items", {**base, **question}, workspace=workspace)
+    return api("/api/vqa/versions", {"split": "validation"}, workspace=workspace)
+
+
+def cache_timing_summary(rows):
+    def spread(values):
+        return {"median": statistics.median(values), "min": min(values), "max": max(values)}
+
+    cold = [row["arms"]["cold"] for row in rows]
+    cached = [row["arms"]["cached"] for row in rows]
+    return {
+        "cold_terminal_seconds": spread([arm["terminal_seconds"] for arm in cold]),
+        "cached_terminal_seconds": spread([arm["terminal_seconds"] for arm in cached]),
+        "cold_request_seconds": spread([arm["request_seconds"] for arm in cold]),
+        "cached_request_seconds": spread([arm["request_seconds"] for arm in cached]),
+        "pairs": len(rows),
+    }
+
+
+def cache_impact(api, run, evidence):
+    """Compare real uncached and workspace-cached runs through the production HTTP API."""
+    from PIL import Image, ImageDraw
+    if not os.environ.get("VQA_MODEL_PATH") or not os.environ.get("VQA_MODEL_PYTHON"):
+        raise RuntimeError("Cache-impact benchmark requires explicit VQA_MODEL_PATH and VQA_MODEL_PYTHON. No model download or fallback is available.")
+    if os.environ.get("VQA_PROFILE_DIR"):
+        raise RuntimeError("Cache-impact timings cannot run with VQA_PROFILE_DIR enabled.")
+    if shutil.disk_usage(run).free < 10 * 1024 ** 3:
+        raise RuntimeError("10 GiB free disk reserve required")
+    output = {
+        "schema": 1, "passed": False, "mode": "real-model-cache-impact", "pairs": [],
+        "environment": {"python": sys.version, "platform": platform.platform(), "cpu_count": os.cpu_count(), "processor": platform.processor(), "command": sys.argv},
+        "source": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        "dirty": subprocess.check_output(["git", "status", "--porcelain"], text=True),
+        "source_files_sha256": {
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in (Path(__file__).resolve(), Path(__file__).with_name("verify-trialdesk.py"))
+        },
+        "timing": {"endpoint_request": "POST /api/vqa/runs admission call only", "terminal": "admission call through first terminal state poll", "poll_interval_seconds": 0.2},
+        "cache_policy": "Each pair prepopulates a separate warm workspace before timed arms. Cold and cached arms use distinct otherwise-identical workspaces. Timed arm order alternates; the cold arm still starts with an empty workspace cache. Cold and prepopulation runs start a new model process; a fully cached run skips model process startup. The OS file cache is not flushed, so this measures the application answer cache and includes normal host cache effects.",
+    }
+    evidence["cache_impact_benchmark"] = output
+    image = Image.new("RGB", (256, 256), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((48, 48, 208, 208), fill="red")
+    draw.text((64, 18), "RED SQUARE", fill="black")
+    encoded_buffer = io.BytesIO()
+    image.save(encoded_buffer, "PNG")
+    encoded = base64.b64encode(encoded_buffer.getvalue()).decode()
+    (run / "cache-impact-owned-red-square.png").write_bytes(encoded_buffer.getvalue())
+    base = {"image": encoded, "context": "", "aliases": [], "split": "validation", "answer_mode": "mcq"}
+    questions = [
+        {"question": "What color is the square?", "choices": ["red", "blue"], "answer": "red", "answer_label": 0},
+        {"question": "Which shape is shown?", "choices": ["square", "circle"], "answer": "square", "answer_label": 0},
+        {"question": "What color is the background?", "choices": ["white", "black"], "answer": "white", "answer_label": 0},
+    ]
+
+    def checkpoint():
+        target = run / "cache-impact-progress.json"
+        temporary = target.with_suffix(".tmp")
+        temporary.write_text(json.dumps(output, indent=2), encoding="utf-8")
+        temporary.replace(target)
+
+    def complete(workspace, version, label, timed, arm):
+        record = {"workspace": workspace, "timed": timed}
+        try:
+            before = time.monotonic()
+            started = api("/api/vqa/runs", {"version": version["id"]}, workspace=workspace)
+            admitted = time.monotonic()
+            deadline = admitted + 650
+            while time.monotonic() < deadline:
+                state = api("/api/vqa/state", workspace=workspace)
+                result = next(row for row in state["runs"] if row["id"] == started["id"])
+                if result["status"] != "running":
+                    observed = time.monotonic()
+                    break
+                time.sleep(0.2)
+            else:
+                api(f"/api/vqa/runs/{started['id']}/cancel", {}, workspace=workspace)
+                raise TimeoutError("VQA cache-impact run exceeded the 650-second HTTP journey bound")
+            exported = api(f"/api/vqa/runs/{started['id']}/export", workspace=workspace)
+            name = f"cache-impact-{label}-{started['id']}.json"
+            (run / name).write_text(json.dumps(exported, indent=2), encoding="utf-8")
+            record.update({
+                "run": started["id"], "status": result["status"], "cache_hits": result["cache_hits"],
+                "inference_items": sum(not row["cache_hit"] for row in result["results"]),
+                "vision_forwards": sum(row["vision_forwards"] for row in result["results"] if not row["cache_hit"]),
+                "generation_seconds": [row["generation_seconds"] for row in result["results"] if not row["cache_hit"]],
+                "item_seconds": [row["item_seconds"] for row in result["results"] if not row["cache_hit"]],
+                "request_seconds": admitted - before, "terminal_seconds": observed - before,
+                "terminal_observation_seconds_after_admission": observed - admitted,
+                "export": name, "export_sha256": hashlib.sha256((run / name).read_bytes()).hexdigest(),
+            })
+            record["input_parity"] = cache_input_parity(exported)
+            record["predictions"] = cache_predictions(exported)
+            validate_cache_arm(exported, arm, len(questions))
+            record["model_manifest_sha256"] = hashlib.sha256(json.dumps(result["model_manifest"], sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        except Exception as error:
+            record["error"] = f"{type(error).__name__}: {error}"
+        return record
+
+    start = time.monotonic()
+    try:
+        for index in range(5):
+            pair = {"pair": index + 1, "questions": [question["question"] for question in questions], "arms": {}}
+            output["pairs"].append(pair)
+            cold_workspace = f"cache-cold-{index + 1}"
+            warm_workspace = f"cache-warm-{index + 1}"
+            cold_version = cache_setup(api, cold_workspace, base, questions)
+            warm_version = cache_setup(api, warm_workspace, base, questions)
+            if cache_manifest_parity(cold_version["manifest"]) != cache_manifest_parity(warm_version["manifest"]):
+                raise AssertionError("Paired workspaces must freeze identical manifests")
+            prime = complete(warm_workspace, warm_version, f"prime-{index + 1}", False, "cold")
+            pair["prepopulation"] = prime
+            if prime.get("error") or prime.get("status") != "completed" or prime.get("cache_hits") != 0 or prime.get("inference_items") != len(questions):
+                raise RuntimeError(f"Warm cache prepopulation did not run all model inferences: {prime}")
+            if output.setdefault("model_manifest_sha256", prime["model_manifest_sha256"]) != prime["model_manifest_sha256"]:
+                raise RuntimeError("Model manifest hash changed during the cache-impact campaign")
+            order = ("cold", "cached") if index % 2 == 0 else ("cached", "cold")
+            pair["timed_order"] = list(order)
+            for arm in order:
+                workspace, version = (cold_workspace, cold_version) if arm == "cold" else (warm_workspace, warm_version)
+                pair["arms"][arm] = complete(workspace, version, f"{arm}-{index + 1}", True, arm)
+                if pair["arms"][arm].get("error"):
+                    checkpoint()
+                    raise RuntimeError(pair["arms"][arm]["error"])
+                if pair["arms"][arm]["model_manifest_sha256"] != output["model_manifest_sha256"]:
+                    raise RuntimeError("Timed arm used a different model manifest")
+            cold, prime, cached = pair["arms"]["cold"], pair["prepopulation"], pair["arms"]["cached"]
+            if cold["input_parity"] != prime["input_parity"] or cold["input_parity"] != cached["input_parity"]:
+                raise AssertionError(f"Input manifest or model provenance differs in pair {index + 1}")
+            if cached["predictions"] != prime["predictions"]:
+                raise AssertionError(f"Cached outputs differ from their own prepopulation in pair {index + 1}")
+            keys = cold["predictions"].keys()
+            pair["independent_generation_agreement"] = {
+                "items": len(keys),
+                "prediction_matches": sum(cold["predictions"][key]["prediction"] == prime["predictions"][key]["prediction"] for key in keys),
+                "score_matches": sum(cold["predictions"][key]["score"] == prime["predictions"][key]["score"] for key in keys),
+            }
+            checkpoint()
+        output["summary"] = cache_timing_summary(output["pairs"])
+        output["elapsed_seconds"] = time.monotonic() - start
+        output["passed"] = True
+        (run / "cache-impact.json").write_text(json.dumps(output, indent=2), encoding="utf-8")
+        print(json.dumps({"cache_impact_passed": True, "pairs": len(output["pairs"])}), flush=True)
+    except Exception as error:
+        output["error"] = f"{type(error).__name__}: {error}"
+        output["elapsed_seconds"] = time.monotonic() - start
+        checkpoint()
+        raise
 
 
 def benchmark(api, run, workspace_id, evidence, manifest_path):

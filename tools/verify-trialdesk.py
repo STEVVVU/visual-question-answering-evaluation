@@ -21,7 +21,7 @@ parser.add_argument("run_name")
 parser.add_argument("--port", type=int, default=8430)
 parser.add_argument("--ci", action="store_true")
 parser.add_argument("--vqa", action="store_true", help="Include the VQA HTTP journey")
-parser.add_argument("--benchmark-vqa", help="Pinned benchmark manifest path, or smoke for a no-inference lifecycle check")
+parser.add_argument("--benchmark-vqa", help="Pinned manifest path, smoke for no-inference lifecycle, or cache-impact for paired real-model cache timings")
 args = parser.parse_args()
 if not args.run_name.replace("-", "").replace("_", "").isalnum():
     parser.error("Use a unique alphanumeric run name")
@@ -216,8 +216,11 @@ try:
             vqa_record = journey(api, run, workspace_id, evidence)
         elif command == "benchmark-vqa":
             import runpy
-            benchmark = runpy.run_path(str(ROOT / "tools" / "benchmark-vqa-journey.py"))["benchmark"]
-            benchmark(api, run, workspace_id, evidence, args.benchmark_vqa)
+            journeys = runpy.run_path(str(ROOT / "tools" / "benchmark-vqa-journey.py"))
+            if args.benchmark_vqa == "cache-impact":
+                journeys["cache_impact"](api, run, evidence)
+            else:
+                journeys["benchmark"](api, run, workspace_id, evidence, args.benchmark_vqa)
         elif command == "restart":
             stop()
             launch()

@@ -1,0 +1,258 @@
+{
+  "schema": "vqa-export-v1",
+  "run": {
+    "boot": "468aa3e13b3c4241bbd699e8470eeac8",
+    "cache_hits": 0,
+    "cancel_requested": false,
+    "created": 1792870029.7684386,
+    "device": "cpu",
+    "error": null,
+    "finished": 1792870080.6326547,
+    "generation": {
+      "do_sample": false,
+      "max_new_tokens": 32
+    },
+    "id": "e70e919a383c4a28b2e22842ad33c9f6",
+    "metrics": {
+      "accuracy": 1.0,
+      "completed": 3,
+      "correct": 3,
+      "manual": 0,
+      "scored": 3,
+      "total": 3
+    },
+    "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+    "model_manifest": {
+      "files": [
+        {
+          "bytes": 16400,
+          "name": "README.md",
+          "sha256": "0b687c656b2587d84cb85003825746f8b3a08497dff4ed51b54b1090719fa512",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/README.md"
+        },
+        {
+          "bytes": 4739,
+          "name": "added_tokens.json",
+          "sha256": "74135b8664b56088c0006f1c8e848d79a8eba003411f72ebf1dc2ee96227be3a",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/added_tokens.json"
+        },
+        {
+          "bytes": 429,
+          "name": "chat_template.json",
+          "sha256": "a68ad1a42681ae44eacd109ff8dd56a840f761c03d72f4ff4c515d092f882168",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/chat_template.json"
+        },
+        {
+          "bytes": 7353,
+          "name": "config.json",
+          "sha256": "b70fb4bfde88df9eeebc9d8ff523733b8bf70d6c9b06c610325960e06ae9db52",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/config.json"
+        },
+        {
+          "bytes": 136,
+          "name": "generation_config.json",
+          "sha256": "067a2a54e5f87162ecac6e0e911cc4665fc8f7f3324794ecbac0f76badb56636",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/generation_config.json"
+        },
+        {
+          "bytes": 466391,
+          "name": "merges.txt",
+          "sha256": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/merges.txt"
+        },
+        {
+          "bytes": 513028808,
+          "name": "model.safetensors",
+          "sha256": "74dea5904032e5ae99a2e0eef5179e6ac0f1dedc3ab0c7c2a5d4d387c843203e",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/model.safetensors"
+        },
+        {
+          "bytes": 486,
+          "name": "preprocessor_config.json",
+          "sha256": "6cb6e36d6fcb88ca1502c4a26750715dc3e7dedddc9a8f17b27d8d167d1457e7",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/preprocessor_config.json"
+        },
+        {
+          "bytes": 68,
+          "name": "processor_config.json",
+          "sha256": "e7bff42da73ae9eec9042ef20e066e11f1ee20f025358ff79131e3c0fb549b46",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/processor_config.json"
+        },
+        {
+          "bytes": 1069,
+          "name": "special_tokens_map.json",
+          "sha256": "aa0ff906077086dfa9734a7f97f68c825877a48f9468807be65504495cdeef09",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/special_tokens_map.json"
+        },
+        {
+          "bytes": 3548256,
+          "name": "tokenizer.json",
+          "sha256": "5ece781dc8d2b2f3e2f289ca0ae50b17cfc27dd27bfe7971bb8241e0b964331a",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer.json"
+        },
+        {
+          "bytes": 28249,
+          "name": "tokenizer_config.json",
+          "sha256": "36c6fd44d07d10fd8180ee6b46dcccf69fb7c06753968ff0d7e17b8bfe17b777",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/tokenizer_config.json"
+        },
+        {
+          "bytes": 800662,
+          "name": "vocab.json",
+          "sha256": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79",
+          "url": "https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/resolve/7e3e67edbbed1bf9888184d9df282b700a323964/vocab.json"
+        }
+      ],
+      "license": "Apache-2.0",
+      "model": "HuggingFaceTB/SmolVLM-256M-Instruct",
+      "revision": "7e3e67edbbed1bf9888184d9df282b700a323964"
+    },
+    "prompt_version": "image-question-choices-v1",
+    "rankable": true,
+    "results": [
+      {
+        "answer_key": "5508808dc006060c1c214040476785cacd96d816ee15e3aad089710e5f0d83a7",
+        "cache_hit": false,
+        "cpu_seconds": 70.984375,
+        "device": "cpu",
+        "generated_tokens": 3,
+        "generation_seconds": 15.38432520000788,
+        "id": "1884247251db41b4b734600736cd63b8",
+        "item_seconds": 15.66497939999681,
+        "model_load_seconds": 5.0682834000035655,
+        "pixel_shape": [
+          1,
+          17,
+          3,
+          512,
+          512
+        ],
+        "prediction": " White.",
+        "prompt_sha256": "9846ed6659fce66695c4ae87d046a54b00d46e1fccc642e271cbc555abc5281b",
+        "score": {
+          "correct": true,
+          "status": "scored"
+        },
+        "score_key": "0b29eeb6cde4bbd01657dae8aacd38880d2a1bb70bada5cfcbe9c14305d2e41d",
+        "vision_forwards": 1
+      },
+      {
+        "answer_key": "d8738052c2b319e9a53a9d34cd68cc3ac399d8886ec4d09450be1908d00e3e01",
+        "cache_hit": false,
+        "cpu_seconds": 128.171875,
+        "device": "cpu",
+        "generated_tokens": 5,
+        "generation_seconds": 14.242279199999757,
+        "id": "20c522c0223a47dca96e4fa2f2b0c8c6",
+        "item_seconds": 14.470247300007031,
+        "model_load_seconds": 5.0682834000035655,
+        "pixel_shape": [
+          1,
+          17,
+          3,
+          512,
+          512
+        ],
+        "prediction": " A. square.",
+        "prompt_sha256": "4cbc96170994887c8d2a55979807f6ca3a7f357aa727be9e3f937ce4a9bdcfb2",
+        "score": {
+          "correct": true,
+          "status": "scored"
+        },
+        "score_key": "f3bca29524a1bafa90a44097d275fd90c336e7de0b7b6d021b0a913f1d63ef9a",
+        "vision_forwards": 1
+      },
+      {
+        "answer_key": "e2c5045b9098ac69199fce4f821f403c966731db48bed9f6af35d9ed9558da36",
+        "cache_hit": false,
+        "cpu_seconds": 185.078125,
+        "device": "cpu",
+        "generated_tokens": 5,
+        "generation_seconds": 14.123319799997262,
+        "id": "3f88be81b9ea4427a6b1a9468b26dfee",
+        "item_seconds": 14.35635679999541,
+        "model_load_seconds": 5.0682834000035655,
+        "pixel_shape": [
+          1,
+          17,
+          3,
+          512,
+          512
+        ],
+        "prediction": " A. red.",
+        "prompt_sha256": "685c8f0d268812c3e6e72c21a338dd948932d99a08191d44098bab25f722ba3b",
+        "score": {
+          "correct": true,
+          "status": "scored"
+        },
+        "score_key": "5c017db86d8f2e18841bd2e5967b00c61ede318723478bacef771e68d09458f9",
+        "vision_forwards": 1
+      }
+    ],
+    "revision": "7e3e67edbbed1bf9888184d9df282b700a323964",
+    "scorer": "mode-exact-v3",
+    "status": "completed",
+    "total": 3,
+    "version": "c86f40cc9db59829fe2903df1d13c728ac734ef2f6335a1ac6dba157ae556f3d"
+  },
+  "version": {
+    "id": "c86f40cc9db59829fe2903df1d13c728ac734ef2f6335a1ac6dba157ae556f3d",
+    "manifest": {
+      "items": [
+        {
+          "aliases": [],
+          "answer": "white",
+          "answer_label": 0,
+          "answer_mode": "mcq",
+          "choices": [
+            "white",
+            "black"
+          ],
+          "context": "",
+          "id": "1884247251db41b4b734600736cd63b8",
+          "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+          "question": "What color is the background?",
+          "revision": 1,
+          "split": "validation"
+        },
+        {
+          "aliases": [],
+          "answer": "square",
+          "answer_label": 0,
+          "answer_mode": "mcq",
+          "choices": [
+            "square",
+            "circle"
+          ],
+          "context": "",
+          "id": "20c522c0223a47dca96e4fa2f2b0c8c6",
+          "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+          "question": "Which shape is shown?",
+          "revision": 1,
+          "split": "validation"
+        },
+        {
+          "aliases": [],
+          "answer": "red",
+          "answer_label": 0,
+          "answer_mode": "mcq",
+          "choices": [
+            "red",
+            "blue"
+          ],
+          "context": "",
+          "id": "3f88be81b9ea4427a6b1a9468b26dfee",
+          "image_sha256": "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a",
+          "question": "What color is the square?",
+          "revision": 1,
+          "split": "validation"
+        }
+      ],
+      "schema": "vqa-manifest-v1",
+      "split": "validation"
+    }
+  },
+  "images": {
+    "c772e41d080a7242ca9f2580e9131e475a98e6be1387b7f42a593eb1782d355a": "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"
+  }
+}

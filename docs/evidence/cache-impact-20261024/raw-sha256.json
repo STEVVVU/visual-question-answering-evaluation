@@ -1,0 +1,70 @@
+{
+  "cache-impact-cached-1-02725363dce64449917567f5ea2ef083.json": {
+    "sha256": "d3d5b6981e7f40b9b4a30cdc45edc304b7d5033f2a167af14519b23c34fb0705",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cached-2-0ad089aa41d5467d8f93d115613b45d5.json": {
+    "sha256": "3952084bbf11d8572973368d55fc204150e0be526fc6ee33adef0819739b5b0d",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cached-3-aca87b5c70ac458b9965f8776a1daf12.json": {
+    "sha256": "fde95d48eb6b07dcba7e20d8b7bd474790c2b1df58dc8e7b7b69b9790edfe944",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cached-4-afeeb5f3cd7a4ce19b3d04d986ecdfb4.json": {
+    "sha256": "9cbced460f794821016567b62721886f424a5a82574c674659d96edf33710513",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cached-5-36d7ad62222746a9aaec6dbbded01cd7.json": {
+    "sha256": "05fae10e8571a7eb5470fddc385c7da7c3792724a5a2fae75bc3384c3307f4a0",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cold-1-b85628fadbd84037b3f486cf995a3227.json": {
+    "sha256": "371c68d51c7fb62db139840e334e544ee992973fb44d5e6b409d1f96f9025c48",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cold-2-dd880dd6fee74b278f06264552010afc.json": {
+    "sha256": "b212265bbce6e0b2b06b1098ba3b09b6fac3e7bc12d5abeeceec86724c3da5c2",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cold-3-6df99e72677b4188933295bb8aeeed4d.json": {
+    "sha256": "1d75e034a04e16c1db5ca97442ecaa1728decdc9cc97518544a49e98cea0e070",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cold-4-e70e919a383c4a28b2e22842ad33c9f6.json": {
+    "sha256": "2afec8600e958d261a8c3f2bfdd7a242fc934098d97829702e58d5a2e58808b2",
+    "line_endings": "crlf"
+  },
+  "cache-impact-cold-5-0ab2fd8e94b74b90b0e89fb52c308671.json": {
+    "sha256": "1120db93109f2425352734dc5546689de27c38ee3e1ef9b289e13335f21ead37",
+    "line_endings": "crlf"
+  },
+  "cache-impact-prime-1-6c6de97404bc47018b2a09c15e8046a5.json": {
+    "sha256": "06c36f83d702f80ebdef21daa65f0ab57a37a85224e93cf40a743a0d3cf748c8",
+    "line_endings": "crlf"
+  },
+  "cache-impact-prime-2-d3c6f31cdfa841a981156083d433e6e7.json": {
+    "sha256": "e1c3e5eed5f68f6d689f8aeb2b4b72f22f6ca5f730cc64314d98563b9a396f56",
+    "line_endings": "crlf"
+  },
+  "cache-impact-prime-3-5762f7e3cef14bbb8a506e06122d02d4.json": {
+    "sha256": "f1648e0f6e89a8f1818fcd02ed5b29532aa73c5f7211efe53ae97f9f99b00b09",
+    "line_endings": "crlf"
+  },
+  "cache-impact-prime-4-e6b76612e2474afcaaa82f380ad57fa4.json": {
+    "sha256": "96bc1b3511cb75e0809fa1c0ef9fa3312a4d393ef9830fc42fb2d74305789e54",
+    "line_endings": "crlf"
+  },
+  "cache-impact-prime-5-c9acaab46bfe4cf2acdc042ff8f69bd0.json": {
+    "sha256": "330e498127332e802652c05afab0dec819457da4d168ea13348057dc8b2ec5df",
+    "line_endings": "crlf"
+  },
+  "cache-impact.json": {
+    "sha256": "cc988af685635c4bf40de358c9531938e053432026ada5d1bca8595c1b7401cf",
+    "line_endings": "crlf"
+  },
+  "result.json": {
+    "sha256": "7f0c9ec96a0e2d22982bdb4f57b68e544dbf1ddd5007a81e07a41e0b29fe2d29",
+    "line_endings": "crlf"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "benchmark-vqa-journey.py": {
+    "native_sha256": "0d5fc12769720a42d910db9a12c6e321141e00eb55a1b6b6cfd9ddbf4d4fd3d9",
+    "canonical_lf_sha256": "0d5fc12769720a42d910db9a12c6e321141e00eb55a1b6b6cfd9ddbf4d4fd3d9",
+    "native_line_endings": "lf"
+  },
+  "verify-trialdesk.py": {
+    "native_sha256": "d71aa5c0cab8ab3f3cf1e99615fd7ba3f1e8994f29e21a341539ced1731c828a",
+    "canonical_lf_sha256": "5a48603936755ae7e2c64f6378b8116e8686f991dc6585d28142b1dabfb7bc83",
+    "native_line_endings": "crlf"
+  }
+}
