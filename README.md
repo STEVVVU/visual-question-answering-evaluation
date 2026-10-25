@@ -2,6 +2,7 @@
 
 ## Guide
 
+- [Implementation techniques](#implementation-techniques)
 - [Architecture and execution guide](#architecture-and-execution-guide)
 - [Run the application](#run-the-application)
 - [Configure the real local model](#configure-the-real-local-model)
@@ -208,5 +209,238 @@ It marks an answer with no configured objective scoring rule. It remains visible
 <details><summary>What is offline inference?</summary>
 
 It uses files already present and blocks remote model loading. Missing or invalid files produce failure rather than a download or invented output.
+
+</details>
+
+## Implementation techniques
+
+This section covers the active VQA dataset, local evaluation and API paths; the inherited Data Formulator application is outside this focused audit. Rationale is inferred from current code.
+
+| Active subsystem | Technique cards | Source files |
+|---|---|---|
+| Annotation and image storage | [Validated image canonicalization](#technique-validated-image-canonicalization), [Revisioned immutable manifests](#technique-revisioned-immutable-manifests) | `py-src/data_formulator/vqa.py` |
+| Prediction reuse and scoring | [Separated cache identities](#technique-separated-cache-identities), [Deterministic answer scoring](#technique-deterministic-answer-scoring), [Rankability gates](#technique-rankability-gates) | `py-src/data_formulator/vqa.py` |
+| Local evaluation worker | [Offline model integrity checks](#technique-offline-model-integrity-checks), [Single-slot bounded child lifecycle](#technique-single-slot-bounded-child-lifecycle), [Incremental partial-result recovery](#technique-incremental-partial-result-recovery), [Prompt construction and generation](#technique-prompt-construction-and-generation) | `py-src/data_formulator/vqa_execution.py`, `py-src/data_formulator/vqa_runner.py` |
+| HTTP API and workspace access | [Identity-scoped workspace selection](#technique-identity-scoped-workspace-selection), [Validated API envelopes](#technique-validated-api-envelopes) | `py-src/data_formulator/routes/vqa.py`, `py-src/data_formulator/workspace_factory.py`, `py-src/data_formulator/auth/identity.py`, `py-src/data_formulator/datalake/workspace_manager.py` |
+| Studio UI and results | [Typed polling and visible run state](#technique-typed-polling-and-visible-run-state), [Provenance-aware comparison and export](#technique-provenance-aware-comparison-and-export) | `src/views/VqaStudio.tsx`, `py-src/data_formulator/vqa.py` |
+
+<a id="technique-validated-image-canonicalization"></a>
+
+<details>
+<summary>Validated image canonicalization</summary>
+
+**Mechanism.** `image_png` bounds the encoded and decoded sizes, accepts only single-frame PNG or JPEG, checks dimensions and pixel count, fully decodes, converts to RGB, and stores canonical PNG bytes. Their SHA-256 becomes the image identity.
+
+**Example.** Two uploads that decode to the same RGB pixels produce the same stored image bytes and image hash.
+
+**Why here.** The model, cache key, manifest, and export all refer to one validated raster representation.
+
+**Tradeoffs.** Re-encoding costs CPU and storage; animated and other image formats are rejected.
+
+**Code and ownership.** [`image_png`](py-src/data_formulator/vqa.py#L74) and [`save_item`](py-src/data_formulator/vqa.py#L185), extension.
+
+</details>
+
+<a id="technique-revisioned-immutable-manifests"></a>
+
+<details>
+<summary>Revisioned immutable manifests</summary>
+
+**Mechanism.** Saving an annotation increments its revision. Freezing sorts the selected split by item ID, captures complete annotation records, canonicalizes JSON, and hashes the manifest. Versions use insert-ignore semantics, so the same content resolves to the same immutable version ID while edits create a new digest.
+
+**Example.** Editing a gold label changes the annotation revision and the next frozen manifest hash, while an earlier run continues to reference its original version.
+
+**Why here.** Evaluation input must remain identifiable after workspace annotations change.
+
+**Tradeoffs.** Each meaningful edit requires a new freeze; old versions consume bounded storage.
+
+**Code and ownership.** [`canonical`](py-src/data_formulator/vqa.py#L26), [`save_item`](py-src/data_formulator/vqa.py#L185), [`freeze`](py-src/data_formulator/vqa.py#L215), extension.
+
+</details>
+
+<a id="technique-separated-cache-identities"></a>
+
+<details>
+<summary>Separated prediction and scoring cache identities</summary>
+
+**Mechanism.** `prompt_item` omits the gold answer and aliases. `answer_key` hashes that prompt input with pinned model revision and files, generation settings, and prompt version. A separate score key includes the answer key, prediction, full annotation, and scorer version.
+
+**Example.** A gold-only edit reuses the prediction but creates a different score identity and recalculates correctness.
+
+**Why here.** Model inference is costly while annotation changes should not silently reuse a stale score.
+
+**Tradeoffs.** Model or prompt changes intentionally miss the answer cache; annotation or scorer changes intentionally miss the score cache.
+
+**Code and ownership.** [`answer_key`](py-src/data_formulator/vqa.py#L104), extension.
+
+</details>
+
+<a id="technique-deterministic-answer-scoring"></a>
+
+<details>
+<summary>Deterministic answer scoring</summary>
+
+**Mechanism.** `normalize` case-folds, trims, removes terminal punctuation, and collapses whitespace. MCQ scoring accepts a bounded explicit letter, letter plus matching choice, or a unique normalized choice match. Exact mode compares normalized gold and aliases. Manual mode returns `manual_required` with no correctness value.
+
+**Example.** `Answer: C` maps to choice index 2 only when that choice exists; ambiguous free text does not get guessed by a semantic judge.
+
+**Why here.** Deterministic scoring makes repeated comparisons reproducible without a second model or an unstated judgment rule.
+
+**Tradeoffs.** Equivalent paraphrases can be marked incorrect. Manual answers stay unscored by design.
+
+**Code and ownership.** [`normalize`](py-src/data_formulator/vqa.py#L96) and [`score`](py-src/data_formulator/vqa.py#L109), extension.
+
+</details>
+
+<a id="technique-rankability-gates"></a>
+
+<details>
+<summary>Rankability gates</summary>
+
+**Mechanism.** `summarize` computes metrics from saved item results and sets `rankable` only when the run completed and every item has a non-null mechanical score. The UI comparison filters by selected version and the literal scorer string `mode-exact-v2`; backend runs currently record `mode-exact-v3`, so the current UI excludes those runs from this comparison list.
+
+**Example.** A cancelled run with saved predictions remains inspectable, but it cannot enter the ranked comparison list.
+
+**Why here.** Partial coverage and manual judgments should not be displayed as directly comparable accuracy values.
+
+**Tradeoffs.** Exact scorer identifiers can split otherwise related runs into separate comparison groups; a mean score does not override missing items. The current UI/backend version mismatch prevents current runs from appearing in the comparison list.
+
+**Code and ownership.** [`summarize`](py-src/data_formulator/vqa.py#L244) and `Studio` comparison filter ([VqaStudio.tsx](src/views/VqaStudio.tsx#L111)), extension.
+
+</details>
+
+<a id="technique-offline-model-integrity-checks"></a>
+
+<details>
+<summary>Offline model integrity checks</summary>
+
+**Mechanism.** Before evaluation, the server requires an explicit interpreter and model path, verifies manifest model/revision/license and required filenames, rejects unsafe extensions and path names, then checks each file's byte length and SHA-256. The child sets offline flags and loads with local files only and remote code disabled.
+
+**Example.** A missing model configuration fails the run with an error; the route does not download weights or substitute a fixture prediction.
+
+**Why here.** Local evaluation needs a stable model identity and must keep annotations away from remote inference services.
+
+**Tradeoffs.** Users must provision the pinned runtime and weights themselves; checksum validation reads every model file before launch.
+
+**Code and ownership.** [`model_configuration`](py-src/data_formulator/vqa_execution.py#L69) and [`main`](py-src/data_formulator/vqa_runner.py#L35), extension.
+
+</details>
+
+<a id="technique-single-slot-bounded-child-lifecycle"></a>
+
+<details>
+<summary>Single-slot bounded child lifecycle</summary>
+
+**Mechanism.** A nonblocking bounded semaphore admits one evaluator and rejects competing work instead of queueing it. The evaluator starts a separate configured Python process, polls it against a 600-second monotonic deadline, and on cancellation or timeout terminates the owned process tree before releasing the slot. Cleanup failure is persisted and blocks later evaluation.
+
+**Example.** A second run receives a busy error while the first owns the evaluator slot.
+
+**Why here.** CPU inference can outlive an HTTP request and needs bounded resource ownership and a visible stop path.
+
+**Tradeoffs.** Only one run progresses at a time; process-tree discovery and termination differ by operating system.
+
+**Code and ownership.** [`SLOT`](py-src/data_formulator/vqa_execution.py#L18), [`stop_model`](py-src/data_formulator/vqa_execution.py#L23), [`start`](py-src/data_formulator/vqa_execution.py#L94), extension.
+
+</details>
+
+<a id="technique-incremental-partial-result-recovery"></a>
+
+<details>
+<summary>Incremental partial-result recovery</summary>
+
+**Mechanism.** The parent tails newline-delimited child output using a saved byte offset and bounded pending line, validates each prediction, writes answer cache entries immutably, then persists the run after each item. A SQLite transaction preserves a cancellation request when a worker update races with it. On restart, runs from another boot are marked failed while their committed results remain.
+
+**Example.** If cancellation arrives after two predictions in a five-item version, the export retains those two and the run stays unranked.
+
+**Why here.** Long-running inference should expose progress and retain useful outputs after cancellation or process interruption.
+
+**Tradeoffs.** Per-item database writes add I/O; an unflushed incomplete output line is not treated as a prediction.
+
+**Code and ownership.** [`Store.put`](py-src/data_formulator/vqa.py#L158), [`Store.cancel`](py-src/data_formulator/vqa.py#L173), [`execute`](py-src/data_formulator/vqa_execution.py#L114), extension.
+
+</details>
+
+<a id="technique-prompt-construction-and-generation"></a>
+
+<details>
+<summary>Prompt construction and deterministic generation</summary>
+
+**Mechanism.** The runner builds a user message containing the image and question, appends context and indexed choices when present, applies the processor's chat template, and calls generation with pinned settings (`do_sample=False`, 32 new tokens). It decodes only generated tokens after the input prefix. This is inference on supplied prompts, not teacher-forced next-token evaluation.
+
+**Example.** An MCQ prompt appends `A. ...` choices and asks for a letter, while the model input contains no gold label.
+
+**Why here.** A real local model can be evaluated while keeping model execution separate from the web server.
+
+**Tradeoffs.** Results depend on the configured model/runtime and local resources; no quality claim follows from implementing the path.
+
+**Code and ownership.** [`main`](py-src/data_formulator/vqa_runner.py#L35), extension.
+
+</details>
+
+<a id="technique-identity-scoped-workspace-selection"></a>
+
+<details>
+<summary>Identity-scoped workspace selection</summary>
+
+**Mechanism.** The route obtains the request identity, rejects non-local/non-ephemeral backends, validates the workspace header, asks the inherited manager to confirm and open the workspace for that identity, and places the VQA SQLite store beneath the opened workspace path.
+
+**Example.** A client selects an existing workspace ID in a header; it cannot pass a filesystem path to choose the database file.
+
+**Why here.** Dataset and run state belong to a workspace and should not cross that boundary.
+
+**Tradeoffs.** This extension supports local or ephemeral workspaces only; Azure workspace backends are refused by this route.
+
+**Code and ownership.** [`store`](py-src/data_formulator/routes/vqa.py#L16), [`get_workspace_manager`](py-src/data_formulator/workspace_factory.py#L91), inherited. [`get_identity_id`](py-src/data_formulator/auth/identity.py#L165) and [`WorkspaceManager.open_workspace`](py-src/data_formulator/datalake/workspace_manager.py#L365), inherited.
+
+</details>
+
+<a id="technique-validated-api-envelopes"></a>
+
+<details>
+<summary>Validated API envelopes</summary>
+
+**Mechanism.** Route handlers use the selected store helper, parse JSON objects at the boundary, convert validation failures to the existing JSON error envelope, and return state, mutation, cancellation, or export data through the shared success envelope.
+
+**Example.** `POST /api/vqa/versions` validates the split through `Store.freeze` and returns the created content-addressed version.
+
+**Why here.** The UI uses the same application identity and API error conventions as the inherited client.
+
+**Tradeoffs.** Request and response schemas are still checked at runtime across the HTTP boundary; a typed React model alone cannot validate server JSON.
+
+**Code and ownership.** [`payload`](py-src/data_formulator/routes/vqa.py#L35), [`state`](py-src/data_formulator/routes/vqa.py#L45), and shared [`apiRequest`](src/app/apiClient.ts#L152), mixed.
+
+</details>
+
+<a id="technique-typed-polling-and-visible-run-state"></a>
+
+<details>
+<summary>Typed polling and visible run state</summary>
+
+**Mechanism.** `Studio` models items, versions, results, runs, and aggregate state with TypeScript types. It scopes requests to the selected workspace, fetches initial state with an abort signal, polls every 1.2 seconds only while a run is active, clears the interval on completion/unmount, and renders request failures and run terminal status.
+
+**Example.** A running evaluation triggers state refreshes; after its status changes, the active run disappears and polling stops.
+
+**Why here.** Users need progress, failures, cancellation, and partial results while local inference runs outside the request handler.
+
+**Tradeoffs.** Polling adds periodic requests and does not provide push updates; errors stay visible for user dismissal.
+
+**Code and ownership.** [`Studio`](src/views/VqaStudio.tsx#L49), extension using inherited `apiRequest`.
+
+</details>
+
+<a id="technique-provenance-aware-comparison-and-export"></a>
+
+<details>
+<summary>Provenance-aware comparison and export</summary>
+
+**Mechanism.** Each result retains answer and score cache keys, cache-hit status, and score. Each run points to an immutable version and records model, prompt, generation, and scorer identifiers. Export joins the run to its version and includes canonical image bytes by content hash. The UI intends to group by selected version and scorer before ordering rankable runs, but its hard-coded scorer is currently `mode-exact-v2` while new runs use `mode-exact-v3`.
+
+**Example.** Two runs with different manifests are not placed in the selected version's comparison list, while the export still carries full provenance for later inspection.
+
+**Why here.** A score is useful only when its input version and scoring policy can be reconstructed.
+
+**Tradeoffs.** JSON exports duplicate image bytes; comparison requires matching provenance and scorer identifiers. The current scorer string mismatch means current runs are absent from the comparison view.
+
+**Code and ownership.** [`Store.export`](py-src/data_formulator/vqa.py#L234), [`summarize`](py-src/data_formulator/vqa.py#L244), and `Studio` comparison filter ([VqaStudio.tsx](src/views/VqaStudio.tsx#L111)), extension.
 
 </details>
