@@ -2,6 +2,348 @@
 
 ## Architecture and execution guide
 
+<!-- execution-flow:start -->
+### Execution flow
+
+Start with the primary path, then expand a detailed workflow. Select a numbered node to see its operation, implementation techniques, and source. Solid arrows show the named control, data, or lifecycle handoff; dotted arrows show error paths. Separate entry points are named in each workflow.
+
+<a id="review-walkthrough"></a>
+
+#### Walk through one concrete example
+
+Run a VQA evaluation against a frozen annotation version using a verified local model.
+
+**Trace.** [Choose annotation or run action](#flow-step-studio-action) → [Create run pinned to version](#flow-step-create-run) → [Verify local model files](#flow-step-model-check) → [Reuse prediction or request inference](#flow-step-answer-cache) → [Generate answer in bounded child](#flow-step-runner-generation) → [Reuse or compute deterministic score](#flow-step-score-cache) → [Persist prediction incrementally](#flow-step-persist-result) → [Summarize completion and rankability](#flow-step-summarize-run) → [Compare eligible runs or export provenance](#flow-step-compare-export).
+
+**Result and boundary.** On a cache miss, the bounded child generates answers, deterministic scores are cached, and results are committed incrementally before the terminal summary. Only completed, fully scored runs are rankable. The current UI scorer label and backend scorer version differ, as documented below.
+
+<details>
+<summary>Implementation decisions to explain</summary>
+
+**Why freeze annotations into an immutable manifest instead of evaluating the mutable workspace directly?** Canonical image bytes and captured annotation revisions give a run a stable, reproducible input identity. The tradeoff is that later edits require a new frozen version rather than changing an existing one.
+
+[Validated image canonicalization](#technique-validated-image-canonicalization) · [Revisioned immutable manifests](#technique-revisioned-immutable-manifests).
+
+</details>
+
+#### Primary execution flow
+
+The primary flow starts in the VQA studio, persists a frozen evaluation input, runs offline inference or reuses cached answers, scores saved results, and exposes run state and export. UI comparison currently filters scorer v2 while backend emits v3.
+
+```mermaid
+flowchart TD
+    n1["1. Choose annotation or run<br/>action"]
+    click n1 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-studio-action" "Open step, techniques, and source" _top
+    n2["2. Send and validate API request"]
+    click n2 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-api-envelope" "Open step, techniques, and source" _top
+    n3["3. Select identity-scoped<br/>workspace"]
+    click n3 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-workspace-gate" "Open step, techniques, and source" _top
+    n4["4. Validate image and save<br/>annotation revision"]
+    click n4 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-save-annotation" "Open step, techniques, and source" _top
+    n5["5. Freeze split into<br/>content-addressed version"]
+    click n5 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-freeze-manifest" "Open step, techniques, and source" _top
+    n6["6. Create run pinned to version"]
+    click n6 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-create-run" "Open step, techniques, and source" _top
+    n7["7. Reuse prediction or request<br/>inference"]
+    click n7 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-answer-cache" "Open step, techniques, and source" _top
+    n8["8. Verify local model files"]
+    click n8 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-model-check" "Open step, techniques, and source" _top
+    n9["9. Generate answer in bounded<br/>child"]
+    click n9 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-runner-generation" "Open step, techniques, and source" _top
+    n10["10. Persist prediction<br/>incrementally"]
+    click n10 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-persist-result" "Open step, techniques, and source" _top
+    n11["11. Reuse or compute<br/>deterministic score"]
+    click n11 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-score-cache" "Open step, techniques, and source" _top
+    n13["13. Summarize completion and<br/>rankability"]
+    click n13 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-summarize-run" "Open step, techniques, and source" _top
+    n14["14. Compare eligible runs or<br/>export provenance"]
+    click n14 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-compare-export" "Open step, techniques, and source" _top
+    n1 -->|"annotation, freeze, run, cancel,<br/>export requests"| n2
+    n2 -->|"VQA HTTP request"| n3
+    n3 -->|"annotation save accepted"| n4
+    n4 -->|"saved split selected for freeze"| n5
+    n5 -->|"run references frozen version id"| n6
+    n13 -->|"run state displayed; export requested"| n14
+    n6 -->|"Execution validates model before cache<br/>identity or lookup"| n8
+    n8 -->|"Verified manifest digest identifies<br/>cached answers"| n7
+    n7 -->|"Cache hit invokes record and resolves<br/>score cache"| n11
+    n7 -->|"Any missing answers cause bounded<br/>subprocess launch"| n9
+    n9 -->|"ingest caches each answer then calls<br/>record"| n11
+    n11 -->|"record appends score and commits run<br/>after score lookup"| n10
+    n10 -->|"Finally commits terminal summary after<br/>execution or failure"| n13
+```
+
+**Detailed workflows.** [Annotation and immutable version](#flow-workflow-annotation-freeze) · [Offline run, cancellation, and recovery](#flow-workflow-run-cancel-restart).
+
+<a id="flow-workflow-annotation-freeze"></a>
+
+<details>
+<summary>Annotation and immutable version</summary>
+
+Studio annotation requests validate and persist images and annotations, then freeze a split manifest.
+
+```mermaid
+flowchart TD
+    n1["1. Choose annotation or run<br/>action"]
+    click n1 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-studio-action" "Open step, techniques, and source" _top
+    n2["2. Send and validate API request"]
+    click n2 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-api-envelope" "Open step, techniques, and source" _top
+    n3["3. Select identity-scoped<br/>workspace"]
+    click n3 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-workspace-gate" "Open step, techniques, and source" _top
+    n4["4. Validate image and save<br/>annotation revision"]
+    click n4 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-save-annotation" "Open step, techniques, and source" _top
+    n5["5. Freeze split into<br/>content-addressed version"]
+    click n5 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-freeze-manifest" "Open step, techniques, and source" _top
+    n1 -->|"save or freeze"| n2
+    n2 -->|"route dispatch"| n3
+    n3 -->|"save accepted"| n4
+    n4 -->|"freeze saved split"| n5
+```
+
+</details>
+
+<a id="flow-workflow-run-cancel-restart"></a>
+
+<details>
+<summary>Offline run, cancellation, and recovery</summary>
+
+Run execution is independent of the studio process: a single bounded local child handles uncached predictions, with committed item results retained for cancellation and restart inspection.
+
+```mermaid
+flowchart TD
+    n1["1. Choose annotation or run<br/>action"]
+    click n1 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-studio-action" "Open step, techniques, and source" _top
+    n2["2. Send and validate API request"]
+    click n2 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-api-envelope" "Open step, techniques, and source" _top
+    n3["3. Select identity-scoped<br/>workspace"]
+    click n3 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-workspace-gate" "Open step, techniques, and source" _top
+    n6["6. Create run pinned to version"]
+    click n6 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-create-run" "Open step, techniques, and source" _top
+    n7["7. Reuse prediction or request<br/>inference"]
+    click n7 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-answer-cache" "Open step, techniques, and source" _top
+    n8["8. Verify local model files"]
+    click n8 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-model-check" "Open step, techniques, and source" _top
+    n9["9. Generate answer in bounded<br/>child"]
+    click n9 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-runner-generation" "Open step, techniques, and source" _top
+    n10["10. Persist prediction<br/>incrementally"]
+    click n10 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-persist-result" "Open step, techniques, and source" _top
+    n11["11. Reuse or compute<br/>deterministic score"]
+    click n11 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-score-cache" "Open step, techniques, and source" _top
+    n12["12. Cancel child and retain<br/>partial run"]
+    click n12 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-cancel-run" "Open step, techniques, and source" _top
+    n13["13. Summarize completion and<br/>rankability"]
+    click n13 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-summarize-run" "Open step, techniques, and source" _top
+    n15["15. Reload persisted versions<br/>and runs"]
+    click n15 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-restart-read" "Open step, techniques, and source" _top
+    n16["16. Persist failed run and<br/>release evaluator slot"]
+    click n16 href "https://github.com/STEVVVU/visual-question-answering-evaluation#flow-step-run-failed" "Open step, techniques, and source" _top
+    n1 -->|"start or cancel"| n2
+    n2 -->|"route dispatch"| n3
+    n3 -->|"version and model request"| n6
+    n6 -->|"cancel requested while active"| n12
+    n12 -->|"cancelled terminal state with partial<br/>items"| n13
+    n13 -->|"later workspace reload"| n15
+    n6 -->|"Execution validates model before cache<br/>identity or lookup"| n8
+    n8 -->|"Verified manifest digest identifies<br/>cached answers"| n7
+    n7 -->|"Cache hit invokes record and resolves<br/>score cache"| n11
+    n7 -->|"Any missing answers cause bounded<br/>subprocess launch"| n9
+    n9 -->|"ingest caches each answer then calls<br/>record"| n11
+    n11 -->|"record appends score and commits run<br/>after score lookup"| n10
+    n10 -->|"Finally commits terminal summary after<br/>execution or failure"| n13
+    n8 -.->|"Invalid configuration is caught and<br/>persisted as failed"| n16
+    n9 -.->|"Output error, nonzero exit, timeout or<br/>cleanup failure terminates run"| n16
+    n16 -->|"Finally commits terminal summary with<br/>retained results"| n13
+```
+
+</details>
+
+#### Steps, techniques, and source
+
+These source traces cover the active scope below. They explain implementation behavior; benchmark results and their limits remain in the measurement sections.
+
+<a id="flow-step-studio-action"></a>
+
+##### 1. Choose annotation or run action
+
+**Component.** VqaStudio Studio. The studio loads workspace state, presents annotation, freeze, evaluation, cancellation, comparison and export actions, and polls run state while work is active.
+
+**Techniques at this step.** [Typed polling and visible run state](#technique-typed-polling-and-visible-run-state).
+
+**Source.** [`src/views/VqaStudio.tsx:49`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/src/views/VqaStudio.tsx#L49). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-api-envelope"></a>
+
+##### 2. Send and validate API request
+
+**Component.** apiClient apiRequest. Requests carry identity through fetchWithIdentity. The client parses JSON and throws typed errors for malformed or error envelopes; the VQA routes return the standard success/error shape.
+
+**Techniques at this step.** [Validated API envelopes](#technique-validated-api-envelopes).
+
+**Source.** [`src/app/apiClient.ts:152`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/src/app/apiClient.ts#L152) · [`py-src/data_formulator/routes/vqa.py:35`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/routes/vqa.py#L35). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-workspace-gate"></a>
+
+##### 3. Select identity-scoped workspace
+
+**Component.** VQA routes store. The route resolves the current identity and workspace manager, opens the selected workspace and rejects unsupported workspace backends before accessing VQA records.
+
+**Techniques at this step.** [Identity-scoped workspace selection](#technique-identity-scoped-workspace-selection).
+
+**Source.** [`py-src/data_formulator/routes/vqa.py:16`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/routes/vqa.py#L16) · [`py-src/data_formulator/workspace_factory.py:91`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/workspace_factory.py#L91). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-save-annotation"></a>
+
+##### 4. Validate image and save annotation revision
+
+**Component.** vqa Store.save_item. image_png bounds encoded and decoded size, accepts PNG/JPEG, decodes and canonicalizes RGB pixels to PNG. Saving the annotation stores the image by digest and increments the annotation revision.
+
+**Techniques at this step.** [Validated image canonicalization](#technique-validated-image-canonicalization) · [Revisioned immutable manifests](#technique-revisioned-immutable-manifests).
+
+**Source.** [`py-src/data_formulator/vqa.py:74`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L74) · [`py-src/data_formulator/vqa.py:185`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L185). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-freeze-manifest"></a>
+
+##### 5. Freeze split into content-addressed version
+
+**Component.** vqa Store.freeze. Freeze selects a split, captures sorted annotation revisions into canonical JSON and hashes the manifest. Insert-ignore semantics keep an identical version stable; later edits produce a distinct manifest.
+
+**Techniques at this step.** [Revisioned immutable manifests](#technique-revisioned-immutable-manifests).
+
+**Source.** [`py-src/data_formulator/vqa.py:215`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L215). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-create-run"></a>
+
+##### 6. Create run pinned to version
+
+**Component.** VQA routes and Store. POST /runs resolves the frozen version, attempts the single nonblocking evaluator slot, persists a running record and launches a daemon execution thread. Busy admission and a previous cleanup failure reject the request.
+
+**Techniques at this step.** [Offline model integrity checks](#technique-offline-model-integrity-checks) · [Incremental partial-result recovery](#technique-incremental-partial-result-recovery).
+
+**Source.** [`py-src/data_formulator/routes/vqa.py:74`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/routes/vqa.py#L74) · [`py-src/data_formulator/vqa_execution.py:94`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_execution.py#L94). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-answer-cache"></a>
+
+##### 7. Reuse prediction or request inference
+
+**Component.** vqa answer_key and execute. The answer key includes prompt inputs, pinned model identity and generation settings but excludes gold labels. A hit reuses the prediction; a miss enters the bounded local child runner.
+
+**Techniques at this step.** [Separated cache identities](#technique-separated-cache-identities) · [Single-slot bounded child lifecycle](#technique-single-slot-bounded-child-lifecycle).
+
+**Source.** [`py-src/data_formulator/vqa.py:104`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L104) · [`py-src/data_formulator/vqa_execution.py:114`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_execution.py#L114). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-model-check"></a>
+
+##### 8. Verify local model files
+
+**Component.** vqa_execution model_configuration. Before any answer-cache lookup, execute validates the local pinned model manifest, required files, sizes and SHA-256 digests. Missing or invalid files fail even an otherwise cacheable run; no download or fallback exists.
+
+**Techniques at this step.** [Offline model integrity checks](#technique-offline-model-integrity-checks).
+
+**Source.** [`py-src/data_formulator/vqa_execution.py:69`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_execution.py#L69). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-runner-generation"></a>
+
+##### 9. Generate answer in bounded child
+
+**Component.** vqa_runner main. The runner loads the local model with remote code disabled, builds the prompt from question/context/choices and image, and emits one generated prediction. Gold annotations are not supplied to the runner.
+
+**Techniques at this step.** [Prompt construction and deterministic generation](#technique-prompt-construction-and-generation) · [Single-slot bounded child lifecycle](#technique-single-slot-bounded-child-lifecycle).
+
+**Source.** [`py-src/data_formulator/vqa_runner.py:35`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_runner.py#L35). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-persist-result"></a>
+
+##### 10. Persist prediction incrementally
+
+**Component.** vqa Store.put. For a fresh prediction, ingest first writes the immutable answer cache. record resolves its score cache, appends the scored result, and commits the growing run; failure or cancellation retains prior commits.
+
+**Techniques at this step.** [Incremental partial-result recovery](#technique-incremental-partial-result-recovery).
+
+**Source.** [`py-src/data_formulator/vqa.py:158`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L158) · [`py-src/data_formulator/vqa_execution.py:114`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_execution.py#L114). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-score-cache"></a>
+
+##### 11. Reuse or compute deterministic score
+
+**Component.** vqa score. A separate score key binds prediction, annotation and scorer version. On miss, exact/alias or MCQ normalization computes a mechanical result; manual mode remains unscored.
+
+**Techniques at this step.** [Separated cache identities](#technique-separated-cache-identities) · [Deterministic answer scoring](#technique-deterministic-answer-scoring).
+
+**Source.** [`py-src/data_formulator/vqa.py:109`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L109). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-cancel-run"></a>
+
+##### 12. Cancel child and retain partial run
+
+**Component.** vqa Store.cancel and execution. Store.cancel transactionally sets cancel_requested only on running records. The worker observes the flag, records cancelled status and stops its owned child in finally; committed results remain available.
+
+**Techniques at this step.** [Single-slot bounded child lifecycle](#technique-single-slot-bounded-child-lifecycle) · [Incremental partial-result recovery](#technique-incremental-partial-result-recovery).
+
+**Source.** [`py-src/data_formulator/vqa.py:173`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L173) · [`py-src/data_formulator/vqa_execution.py:23`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_execution.py#L23). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-summarize-run"></a>
+
+##### 13. Summarize completion and rankability
+
+**Component.** vqa summarize. Metrics derive from saved item results. Rankability requires completed status and a non-null mechanical score for every item; failed, cancelled, partial and manual runs remain unranked.
+
+**Techniques at this step.** [Rankability gates](#technique-rankability-gates).
+
+**Source.** [`py-src/data_formulator/vqa.py:244`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L244). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-compare-export"></a>
+
+##### 14. Compare eligible runs or export provenance
+
+**Component.** VqaStudio comparison and Store.export. The UI filters selected-version runs by literal scorer mode-exact-v2, whereas the backend currently records mode-exact-v3, excluding current backend runs from this comparison list. Export serializes run/version provenance and results.
+
+**Techniques at this step.** [Provenance-aware comparison and export](#technique-provenance-aware-comparison-and-export) · [Rankability gates](#technique-rankability-gates).
+
+**Source.** [`src/views/VqaStudio.tsx:112`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/src/views/VqaStudio.tsx#L112) · [`py-src/data_formulator/vqa.py:234`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L234). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-restart-read"></a>
+
+##### 15. Reload persisted versions and runs
+
+**Component.** vqa Store. GET /state and export call Store.runs. A running record from another BOOT becomes failed with a restart error and retained partial results; completed records are read unchanged. Restart does not automatically resume generation.
+
+**Techniques at this step.** [Incremental partial-result recovery](#technique-incremental-partial-result-recovery).
+
+**Source.** [`py-src/data_formulator/vqa.py:226`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa.py#L226). [Back to execution flow](#execution-flow).
+
+<a id="flow-step-run-failed"></a>
+
+##### 16. Persist failed run and release evaluator slot
+
+**Component.** vqa_execution.execute. Configuration, model-output or child failures become failed terminal records with retained partial results. Timeout stops the child after 600 seconds. Cleanup failure records possible surviving PID and blocks future evaluator admission; finally attempts the terminal commit and releases SLOT.
+
+**Techniques at this step.** [Single-slot bounded child lifecycle](#technique-single-slot-bounded-child-lifecycle) · [Incremental partial-result recovery](#technique-incremental-partial-result-recovery).
+
+**Source.** [`py-src/data_formulator/vqa_execution.py:227`](https://github.com/STEVVVU/visual-question-answering-evaluation/blob/trialdesk/py-src/data_formulator/vqa_execution.py#L227). [Back to execution flow](#execution-flow).
+
+<details>
+<summary>Scope and subsystem coverage</summary>
+
+VQA annotation/image validation and persistence, frozen versions, inference and score caches, offline CPU runner, run lifecycle/cancel/restart/export, routes and typed studio paths. The current UI filters scorer v2 while backend records v3, so current runs are not in the UI comparison list.
+
+- **Annotation and image storage.** Covers canonical raster validation, revision saves and immutable split manifest creation. [Step 4](#flow-step-save-annotation), [Step 5](#flow-step-freeze-manifest).
+- **Prediction reuse and scoring.** Covers distinct answer/score identities, deterministic scoring and rankability; comparison notes v2/v3 mismatch. [Step 7](#flow-step-answer-cache), [Step 11](#flow-step-score-cache), [Step 13](#flow-step-summarize-run), [Step 14](#flow-step-compare-export).
+- **Local evaluation worker.** Covers model admission, bounded child generation, incremental result persistence, cancellation and reload recovery. [Step 6](#flow-step-create-run), [Step 7](#flow-step-answer-cache), [Step 8](#flow-step-model-check), [Step 9](#flow-step-runner-generation), [Step 10](#flow-step-persist-result), [Step 12](#flow-step-cancel-run), [Step 15](#flow-step-restart-read).
+- **HTTP API and workspace access.** Covers typed request envelope and identity-scoped workspace resolution used by VQA routes. [Step 2](#flow-step-api-envelope), [Step 3](#flow-step-workspace-gate).
+- **Studio UI and results.** Covers typed polling/state visibility, comparison filter and provenance export. [Step 1](#flow-step-studio-action), [Step 13](#flow-step-summarize-run), [Step 14](#flow-step-compare-export).
+
+Outside this flow audit:
+
+- `src/views/VisualizationView.tsx and inherited charting/agent subsystems`. Retained Trialdesk functionality is outside active VQA execution paths.
+- `Azure workspace backend`. VQA route supports local/ephemeral workspace modes and rejects other backends.
+
+</details>
+
+<!-- execution-flow:end -->
+
+<details>
+<summary>Subsystem technique index</summary>
+
 ### Subsystem map
 
 Select a subsystem in the diagram to open its techniques, tradeoffs, and code references. The numbered links provide the same navigation. This map groups components; the execution diagrams show their runtime flow.
@@ -30,6 +372,8 @@ flowchart LR
 This repository preserves the complete Trialdesk and Microsoft Data Formulator applications. The VQA extension adds annotation, immutable split versions, local image inference, scoring, caches, comparisons, and export. It uses inherited workspace and identity services and an optional separately provisioned SmolVLM runtime; it does not replace inherited charting or agents. A [manifest](#manifest) pins the evaluation input.
 
 The UI calls the local application API. The backend owns VQA records and run lifecycle; inference runs in a bounded child process with explicitly configured model files.
+
+</details>
 
 <details>
 <summary>Expand flow diagram 1</summary>
