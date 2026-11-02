@@ -3,9 +3,27 @@
 Primary reference: https://huggingface.co/datasets/merve/vqav2-small/viewer/default/validation
 Visually inspected supplied capture at 1280×720: `C:/Users/steve/.codex/orchestrate/coursework30-20261021/evidence/P02/reference/huggingface-dataset-studio.png`.
 
+```json
+{
+  "ui_reference_guard": 1,
+  "references": [{
+    "scope": ["src/views/VqaStudio.tsx"],
+    "source_url": "https://huggingface.co/datasets/merve/vqav2-small/viewer/default/validation",
+    "reference_screenshot": "C:/Users/steve/.codex/orchestrate/coursework30-20261021/evidence/P02/reference/huggingface-dataset-studio.png",
+    "viewport": {"width": 1280, "height": 720},
+    "inspected": true,
+    "rendered_screenshot": ".audit/verification/vqa-comparison-real-20261102/dataset-after-cua.jpg",
+    "comparison": "At 1280×720 the dataset view retains the reference's dark two-column header, split bar, table and inspector proportions, typography and spacing. The leaderboard capture .audit/verification/vqa-comparison-real-20261102/leaderboard-after-cua.jpg shows the existing MUI controls, separated by 12px, with the scoring policy label clear and a completed ranked v3 run.",
+    "deviations": ["Product-specific annotation and evaluation controls replace the reference SQL console and dataset content; the leaderboard adds a scoring policy selector using the existing MUI control pattern to separate incompatible scores."]
+  }]
+}
+```
+
 Reproduce the dark dataset workspace: 47px header, 16px outer inset, 12px gap, 756/480 desktop table/inspector proportions, 58px split bar, 38px search bar, 65px rows, 72×48 image previews, 8px panel radii, #0b0f19 background and #252a37 borders. Use existing MUI and Roboto/system text with monospaced table content. Own project title replaces vendor branding. Annotation and evaluation controls replace the unsupported SQL console. Omit unsupported histogram decoration; show actual field types/counts instead. Narrow screens stack panels to preserve accessible controls. Main agent owns final CUA comparison; code inspection alone does not establish visual parity.
 
 ## Rendered comparison
+
+After the scoring policy change, main-agent CUA captured the [dataset](../.audit/verification/vqa-comparison-real-20261102/dataset-after-cua.jpg) and [leaderboard](../.audit/verification/vqa-comparison-real-20261102/leaderboard-after-cua.jpg) at 1280×720 and compared them with the reference. The established two-column composition remains, and the scoring policy selector has a clear 12px gap with no overlapping label. The leaderboard displayed the synthetic completed, ranked v3 run. Windows 125% display scaling required a 1600×900 viewport setting to produce the 1280×720 page capture.
 
 Main-agent CUA compared the actual `/vqa` dataset workspace at 1280×720 with the selected screenshot and confirmed the two-column header/split/table/inspector composition and measured spacing. Actual readable dark input/tab colors were checked after correcting MUI theme derivation. At 390×844, the table and inspector stack; all form and save controls remain reachable, and measured `document.scrollWidth` and `innerWidth` both equal 390. The temporary viewport was reset after review.
 

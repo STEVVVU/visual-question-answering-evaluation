@@ -15,7 +15,7 @@ Run a VQA evaluation against a frozen annotation version using a verified local 
 
 **Trace.** [Choose annotation or run action](#flow-step-studio-action) → [Create run pinned to version](#flow-step-create-run) → [Verify local model files](#flow-step-model-check) → [Reuse prediction or request inference](#flow-step-answer-cache) → [Generate answer in bounded child](#flow-step-runner-generation) → [Reuse or compute deterministic score](#flow-step-score-cache) → [Persist prediction incrementally](#flow-step-persist-result) → [Summarize completion and rankability](#flow-step-summarize-run) → [Compare eligible runs or export provenance](#flow-step-compare-export).
 
-**Result and boundary.** On a cache miss, the bounded child generates answers, deterministic scores are cached, and results are committed incrementally before the terminal summary. Only completed, fully scored runs are rankable. The current UI scorer label and backend scorer version differ, as documented below.
+**Result and boundary.** On a cache miss, the bounded child generates answers, deterministic scores are cached, and results are committed incrementally before the terminal summary. Only completed, fully scored runs are rankable. Comparisons group runs by frozen version and scoring policy.
 
 <details>
 <summary>Implementation decisions to explain</summary>
@@ -28,7 +28,7 @@ Run a VQA evaluation against a frozen annotation version using a verified local 
 
 #### Primary execution flow
 
-The primary flow starts in the VQA studio, persists a frozen evaluation input, runs offline inference or reuses cached answers, scores saved results, and exposes run state and export. UI comparison currently filters scorer v2 while backend emits v3.
+The primary flow starts in the VQA studio, persists a frozen evaluation input, runs offline inference or reuses cached answers, scores saved results, and exposes run state and export. UI comparison selects a scoring policy from the runs for a frozen version.
 
 ```mermaid
 flowchart TD
@@ -295,7 +295,7 @@ These source traces cover the active scope below. They explain implementation be
 
 ##### 14. Compare eligible runs or export provenance
 
-**Component.** VqaStudio comparison and Store.export. The UI filters selected-version runs by literal scorer mode-exact-v2, whereas the backend currently records mode-exact-v3, excluding current backend runs from this comparison list. Export serializes run/version provenance and results.
+**Component.** VqaStudio comparison and Store.export. The UI filters runs by the selected version and scoring policy. Export serializes run/version provenance and results.
 
 **Techniques at this step.** [Provenance-aware comparison and export](#technique-provenance-aware-comparison-and-export) · [Rankability gates](#technique-rankability-gates).
 
@@ -324,10 +324,10 @@ These source traces cover the active scope below. They explain implementation be
 <details>
 <summary>Scope and subsystem coverage</summary>
 
-VQA annotation/image validation and persistence, frozen versions, inference and score caches, offline CPU runner, run lifecycle/cancel/restart/export, routes and typed studio paths. The current UI filters scorer v2 while backend records v3, so current runs are not in the UI comparison list.
+VQA annotation/image validation and persistence, frozen versions, inference and score caches, offline CPU runner, run lifecycle/cancel/restart/export, routes and typed studio paths. The UI compares runs sharing a frozen version and scoring policy.
 
 - **Annotation and image storage.** Covers canonical raster validation, revision saves and immutable split manifest creation. [Step 4](#flow-step-save-annotation), [Step 5](#flow-step-freeze-manifest).
-- **Prediction reuse and scoring.** Covers distinct answer/score identities, deterministic scoring and rankability; comparison notes v2/v3 mismatch. [Step 7](#flow-step-answer-cache), [Step 11](#flow-step-score-cache), [Step 13](#flow-step-summarize-run), [Step 14](#flow-step-compare-export).
+- **Prediction reuse and scoring.** Covers distinct answer/score identities, deterministic scoring, rankability and comparisons grouped by scorer. [Step 7](#flow-step-answer-cache), [Step 11](#flow-step-score-cache), [Step 13](#flow-step-summarize-run), [Step 14](#flow-step-compare-export).
 - **Local evaluation worker.** Covers model admission, bounded child generation, incremental result persistence, cancellation and reload recovery. [Step 6](#flow-step-create-run), [Step 7](#flow-step-answer-cache), [Step 8](#flow-step-model-check), [Step 9](#flow-step-runner-generation), [Step 10](#flow-step-persist-result), [Step 12](#flow-step-cancel-run), [Step 15](#flow-step-restart-read).
 - **HTTP API and workspace access.** Covers typed request envelope and identity-scoped workspace resolution used by VQA routes. [Step 2](#flow-step-api-envelope), [Step 3](#flow-step-workspace-gate).
 - **Studio UI and results.** Covers typed polling/state visibility, comparison filter and provenance export. [Step 1](#flow-step-studio-action), [Step 13](#flow-step-summarize-run), [Step 14](#flow-step-compare-export).
@@ -394,7 +394,7 @@ flowchart LR
 
 </details>
 
-Workspace selection gates access. The service validates uploads and frozen versions, then records predictions and final state. The [answer cache](#answer-cache) and [score cache](#score-cache) have separate provenance; [offline inference](#offline-inference) reads configured local files. Partial or failed evaluations remain visible, as do outputs marked [manual_required](#manual-required), but these cannot enter the leaderboard. Each run points to an [immutable version](#immutable-version).
+Workspace selection gates access. The service validates uploads and frozen versions, then records predictions and final state. The [answer cache](#answer-cache) and [score cache](#score-cache) have separate provenance; [offline inference](#offline-inference) reads configured local files. Partial or failed evaluations remain visible, as do outputs marked [manual_required](#manual-required), but these are unranked. Each run points to an [immutable version](#immutable-version).
 
 <details>
 <summary>Expand flow diagram 2</summary>
@@ -635,13 +635,13 @@ This section covers the active VQA dataset, local evaluation and API paths; the 
 <details>
 <summary>Rankability gates</summary>
 
-**Mechanism.** `summarize` computes metrics from saved item results and sets `rankable` only when the run completed and every item has a non-null mechanical score. The UI comparison filters by selected version and the literal scorer string `mode-exact-v2`; backend runs currently record `mode-exact-v3`, so the current UI excludes those runs from this comparison list.
+**Mechanism.** `summarize` computes metrics from saved item results and sets `rankable` only when the run completed and every item has a non-null mechanical score. The UI comparison filters by selected version and scoring policy.
 
 **Example.** A cancelled run with saved predictions remains inspectable, but it cannot enter the ranked comparison list.
 
 **Why here.** Partial coverage and manual judgments should not be displayed as directly comparable accuracy values.
 
-**Tradeoffs.** Exact scorer identifiers can split otherwise related runs into separate comparison groups; a mean score does not override missing items. The current UI/backend version mismatch prevents current runs from appearing in the comparison list.
+**Tradeoffs.** Exact scorer identifiers split otherwise related runs into separate comparison groups; a mean score does not override missing items.
 
 **Code and ownership.** [`summarize`](py-src/data_formulator/vqa.py#L244) and `Studio` comparison filter ([VqaStudio.tsx](src/views/VqaStudio.tsx#L111)), extension.
 
@@ -837,13 +837,13 @@ This section covers the active VQA dataset, local evaluation and API paths; the 
 <details>
 <summary>Provenance-aware comparison and export</summary>
 
-**Mechanism.** Each result retains answer and score cache keys, cache-hit status, and score. Each run points to an immutable version and records model, prompt, generation, and scorer identifiers. Export joins the run to its version and includes canonical image bytes by content hash. The UI intends to group by selected version and scorer before ordering rankable runs, but its hard-coded scorer is currently `mode-exact-v2` while new runs use `mode-exact-v3`.
+**Mechanism.** Each result retains answer and score cache keys, cache-hit status, and score. Each run points to an immutable version and records model, prompt, generation, and scorer identifiers. Export joins the run to its version and includes canonical image bytes by content hash. The UI groups by selected version and scorer before ordering rankable runs.
 
 **Example.** Two runs with different manifests are not placed in the selected version's comparison list, while the export still carries full provenance for later inspection.
 
 **Why here.** A score is useful only when its input version and scoring policy can be reconstructed.
 
-**Tradeoffs.** JSON exports duplicate image bytes; comparison requires matching provenance and scorer identifiers. The current scorer string mismatch means current runs are absent from the comparison view.
+**Tradeoffs.** JSON exports duplicate image bytes; comparison requires matching provenance and scorer identifiers.
 
 **Code and ownership.** [`Store.export`](py-src/data_formulator/vqa.py#L234), [`summarize`](py-src/data_formulator/vqa.py#L244), and `Studio` comparison filter ([VqaStudio.tsx](src/views/VqaStudio.tsx#L111)), extension.
 
@@ -886,9 +886,11 @@ yarn build
 uv run --frozen python -m data_formulator --host 127.0.0.1 --port 8432 --disable-data-connectors --disable-custom-models --disable-display-keys
 ```
 
-Open `http://127.0.0.1:8432/vqa`. Create a VQA workspace or select an existing workspace through Workspaces. Upload your own raster image, enter a question and answer, then save. Freeze the selected split. Experiments starts runs and displays predictions; Leaderboard compares one frozen version. The UI does not download weights or request model credentials.
+Open `http://127.0.0.1:8432/vqa`. Create a VQA workspace or select an existing workspace through Workspaces. Upload your own raster image, enter a question and answer, then save. Freeze the selected split. Experiments starts runs and displays predictions; Leaderboard compares one frozen version and scoring policy. The UI does not download weights or request model credentials.
 
 ## Configure the real local model
+
+The [scoring-policy comparison check](docs/vqa/scorer-comparison-20261102.md) records the v2/v3 regression fix, a completed real-model run, browser export and restart verification. Its synthetic example checks the workflow rather than model quality.
 
 The optional explicit download command fetches only the allowlisted safetensors, processor/tokenizer/config and model card files for [HuggingFaceTB/SmolVLM-256M-Instruct](https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct), Apache-2.0, revision `7e3e67edbbed1bf9888184d9df282b700a323964`.
 

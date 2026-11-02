@@ -7,11 +7,13 @@
 | Annotation | `/vqa` → workspace → upload PNG/question → save | Image decode limits, canonical schema and durable read |
 | Versions | Dataset → Freeze version | Immutable manifest/hash; revision creates different version |
 | Evaluation | Experiments → Run | Real local model, bounded generation, persisted partial/failure/cancel status |
-| Comparison/export | Leaderboard → select version → export | Comparable version/scorer groups, only complete scored runs ranked; full JSON provenance |
+| Comparison/export | Leaderboard → select version and scoring policy → export | Comparable version/scorer groups, only complete scored runs ranked; full JSON provenance |
 
 ## Sub-features
 
 Answer cache excludes gold; score cache includes annotations and scorer revision. Scorer `mode-exact-v3` additionally accepts an unambiguous explicit `Answer: C` letter, with choice bounds and rejection of prose/multiple answers covered in `tests/backend/test_vqa.py`. Existing saved scores retain their old scorer. Manual freeform remains explicitly unscored.
+
+For comparison/export, the isolated real-model browser check selected a frozen version and v3 policy, displayed a completed ranked run, and exported its full JSON. `tests/frontend/unit/views/VqaStudio.test.tsx` separately checks selection isolates v2 and v3 fixture runs.
 
 `tools/rescore-vqa-validation.py <retained-validation-directory> <new-output.json>` reuses the production scorer on preserved validation exports without inference. It checks export hashes, rejects final-test metadata and refuses output overwrite. `tools/test-vqa-benchmark.py` covers those boundaries separately from quality measurements.
 

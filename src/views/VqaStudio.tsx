@@ -53,6 +53,7 @@ function Studio({ workspace, readOnly }: { workspace: string; readOnly: boolean 
     const [split, setSplit] = useState('validation');
     const [search, setSearch] = useState('');
     const [version, setVersion] = useState('');
+    const [scorer, setScorer] = useState('');
     const [runId, setRunId] = useState('');
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
@@ -109,7 +110,9 @@ function Studio({ workspace, readOnly }: { workspace: string; readOnly: boolean 
         const anchor = document.createElement('a'); anchor.href = url; anchor.download = `vqa-${run.id}.json`; anchor.click(); URL.revokeObjectURL(url);
     }
     const versions = state.versions.filter(v => v.manifest.split === split);
-    const comparable = state.runs.filter(run => run.version === version && run.scorer === 'mode-exact-v2');
+    const scorers = [...new Set(state.runs.filter(run => run.version === version).map(run => run.scorer))].sort();
+    const selectedScorer = scorers.includes(scorer) ? scorer : scorers[scorers.length - 1] ?? '';
+    const comparable = state.runs.filter(run => run.version === version && run.scorer === selectedScorer);
     return <>
         <header className="vqa-header"><strong>Datasets: <span>visual-question-answering</span></strong>
             <Tabs value={tab} onChange={(_, value: number) => setTab(value)} aria-label="VQA workspace views">
@@ -125,8 +128,9 @@ function Studio({ workspace, readOnly }: { workspace: string; readOnly: boolean 
                     <tbody>{rows.map(item => <tr key={item.id} className={draft.id === item.id ? 'selected' : ''}><td><button className="vqa-row-button" onClick={() => setDraft(item)}>{item.answer || 'Manual review'}</button></td><td><button className="vqa-row-button" onClick={() => setDraft(item)}>{item.question}</button></td><td><Preview hash={item.image_sha256} workspace={workspace} /></td></tr>)}</tbody></table>
                     {!rows.length && <div className="vqa-empty">{search ? 'No annotations match this search.' : 'No annotations in this split. Add an image and question in the inspector.'}</div>}</div>
                 <footer className="vqa-table-footer">{rows.length} rows · {state.versions.length} immutable versions <Button onClick={() => setDraft({ ...empty, split })}>New annotation</Button></footer></div> : <div className="vqa-table-panel vqa-runs">
-                <h2>{tab === 1 ? 'Evaluation runs' : 'Comparable runs'}</h2><p>{tab === 1 ? 'Every run retains its frozen input, model revision, scoring policy and raw predictions.' : 'Choose one immutable version to compare. Only completed, fully scored runs are ranked.'}</p>
+                <h2>{tab === 1 ? 'Evaluation runs' : 'Comparable runs'}</h2><p>{tab === 1 ? 'Every run retains its frozen input, model revision, scoring policy and raw predictions.' : 'Choose one immutable version and scoring policy to compare. Only completed, fully scored runs are ranked.'}</p>
                 <TextField select size="small" fullWidth label="Dataset version" value={version} onChange={e => setVersion(e.target.value)}>{versions.map(v => <MenuItem key={v.id} value={v.id}>{v.id.slice(0, 12)} · {v.manifest.items.length} items · {v.manifest.split}</MenuItem>)}</TextField>
+                {tab === 2 && <TextField select size="small" fullWidth label="Scoring policy" sx={{ mt: 1.5 }} value={selectedScorer} onChange={e => setScorer(e.target.value)}>{scorers.map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}</TextField>}
                 <table className="vqa-table"><thead><tr><th>Run / status</th><th>Score / coverage</th><th>Inspect</th></tr></thead><tbody>{(tab === 1 ? state.runs : [...comparable].sort((a, b) => Number(b.rankable) - Number(a.rankable) || (b.metrics.accuracy ?? -1) - (a.metrics.accuracy ?? -1))).map(run => <tr key={run.id}><td>{run.id.slice(0, 8)}<span className="vqa-status">{run.status}{run.rankable ? ' · ranked' : ' · unranked'}</span></td><td>{run.metrics.correct}/{run.metrics.scored} scored<br />{run.metrics.completed}/{run.metrics.total} completed</td><td><Button onClick={() => { setRunId(run.id); setTab(1); }}>Inspect</Button><Button onClick={() => action(() => exportRun(run))}>Export JSON</Button></td></tr>)}</tbody></table>
                 {!(tab === 1 ? state.runs : comparable).length && <p>No runs for this selection.</p>}
                 <p>Synthetic data checks mechanisms only. Accuracy here is not a generalization estimate. Manual answers are unscored.</p></div>}

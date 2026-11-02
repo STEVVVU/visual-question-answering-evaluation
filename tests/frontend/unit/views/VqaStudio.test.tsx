@@ -14,9 +14,10 @@ const version = { id: 'c'.repeat(64), manifest: { split: 'validation', items: [i
 const run = { id: 'run', version: version.id, status: 'running', model: 'local', scorer: 'mode-exact-v2', error: null, rankable: false,
     metrics: { total: 1, completed: 0, scored: 0, correct: 0, manual: 0, accuracy: null }, results: [], cache_hits: 0 };
 let started = false;
+let runs = [run];
 
 beforeEach(() => {
-    vi.clearAllMocks(); started = false;
+    vi.clearAllMocks(); started = false; runs = [run];
     vi.mocked(fetchWithIdentity).mockImplementation(async (url, options) => {
         const route = String(url);
         if (route.startsWith('/api/vqa/images/')) return new Response(new Blob());
@@ -27,7 +28,7 @@ beforeEach(() => {
         }
         let data: unknown = {};
         if (route === '/api/sessions/list') data = { sessions: [] };
-        if (route === '/api/vqa/state') data = { items: [item], versions: [version], runs: started ? [run] : [] };
+        if (route === '/api/vqa/state') data = { items: [item], versions: [version], runs: started ? runs : [] };
         if (route === '/api/vqa/items') data = { ...item, ...JSON.parse(String(options?.body)) };
         if (route === '/api/vqa/versions') data = version;
         if (route === '/api/vqa/runs') { started = true; data = run; }
@@ -36,6 +37,26 @@ beforeEach(() => {
 });
 
 describe('VQA studio production request boundary', () => {
+    it('compares runs only within the selected scorer revision', async () => {
+        started = true;
+        runs = [
+            { ...run, id: 'old-run', status: 'completed', rankable: true },
+            { ...run, id: 'new-run', scorer: 'mode-exact-v3', status: 'completed', rankable: true },
+        ];
+        render(<MemoryRouter><VqaStudio /></MemoryRouter>);
+        await screen.findByRole('button', { name: 'red' });
+        fireEvent.click(screen.getByRole('tab', { name: 'Leaderboard' }));
+        fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Dataset version' }));
+        fireEvent.click(screen.getByRole('option', { name: /cccccccccccc/ }));
+        fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Scoring policy' }));
+        fireEvent.click(screen.getByRole('option', { name: 'mode-exact-v3' }));
+        expect(screen.getByText('new-run')).toBeVisible();
+        expect(screen.queryByText('old-run')).not.toBeInTheDocument();
+        fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Scoring policy' }));
+        fireEvent.click(screen.getByRole('option', { name: 'mode-exact-v2' }));
+        expect(screen.getByText('old-run')).toBeVisible();
+        expect(screen.queryByText('new-run')).not.toBeInTheDocument();
+    });
     it('sends workspace-scoped JSON for creation, annotation, freeze, run and cancel', async () => {
         render(<MemoryRouter><VqaStudio /></MemoryRouter>);
         fireEvent.click(await screen.findByRole('button', { name: 'red' }));
